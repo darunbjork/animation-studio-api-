@@ -193,6 +193,44 @@ This is **senior+ territory**.
 
 ---
 
+🎬 **Asset CRUD Mastery (Senior Backend Mode)**
+
+> *“REST APIs vs React hooks for asset management”*
+
+This phase transforms the **architecture** into a **production-ready API surface**. This is where experienced engineers meticulously consider **edge cases, ownership, pagination, and API contracts**.
+
+---
+
+## MENTAL MODEL
+
+### React Hooks vs REST APIs
+
+| React              | Backend                   |
+| ------------------ | ------------------------- |
+| `useAssets()`      | `GET /assets`             |
+| `useCreateAsset()` | `POST /assets`            |
+| `useUpdateAsset()` | `PATCH /assets/:id`       |
+| `useDeleteAsset()` | `DELETE /assets/:id`      |
+| Local filtering    | Server-side pagination    |
+| Optimistic UI      | Authorization enforcement |
+
+> 🎯 Backend APIs must assume **hostile input** and **concurrent users**.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Full CRUD for assets
+✅ Pagination + sorting (enterprise baseline)
+✅ Studio ownership enforcement (multi-tenant safety)
+✅ Input validation (HTTP boundary)
+✅ Consistent REST contracts
+✅ API patterns that scale to **millions of assets**
+
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.
@@ -212,59 +250,63 @@ These are the packages required for the application to run in production.
 | `jsonwebtoken`       | Implements JSON Web Tokens (JWT) for secure authentication.                 |
 | `winston`            | A versatile logging library for Node.js.                                    |
 | `prom-client`        | A Prometheus client for Node.js, enabling metric collection.                |
+| `express-validator`  | A middleware for Express.js that provides validation and sanitization features. |
 
 ### Development Dependencies (`devDependencies`)
 
 These are the packages used only for development and testing, not for the production application.
 
-| Package          | Description                                                                     |
-| ---------------- | ------------------------------------------------------------------------------- |
-| `typescript`     | A superset of JavaScript that adds static types, improving code quality.        |
-| `ts-node-dev`    | Runs the TypeScript application and automatically restarts it when files change. |
-| `@types/node`    | Provides TypeScript type definitions for the Node.js runtime.                  |
-| `@types/express` | Provides TypeScript type definitions for the Express framework.                 |
-| `jest`           | A testing framework for writing and running tests.                              |
-| `ts-jest`        | A Jest transformer that allows you to test TypeScript code.                     |
-| `@types/jest`    | Provides TypeScript type definitions for the Jest testing framework.            |
-| `supertest`      | A library for testing HTTP endpoints, used for integration tests.               |
-| `@types/bcrypt`     | Provides TypeScript type definitions for the `bcrypt` library.        |
-| `@types/jsonwebtoken` | Provides TypeScript type definitions for the `jsonwebtoken` library. |
+| Package                   | Description                                                               |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `typescript`              | A superset of JavaScript that adds static types, improving code quality.  |
+| `ts-node-dev`             | Runs the TypeScript application and automatically restarts it when files change. |
+| `@types/node`             | Provides TypeScript type definitions for the Node.js runtime.            |
+| `@types/express`          | Provides TypeScript type definitions for the Express framework.           |
+| `jest`                    | A testing framework for writing and running tests.                        |
+| `ts-jest`                 | A Jest transformer that allows you to test TypeScript code.               |
+| `@types/jest`             | Provides TypeScript type definitions for the Jest testing framework.      |
+| `supertest`               | A library for testing HTTP endpoints, used for integration tests.         |
+| `@types/bcrypt`           | Provides TypeScript type definitions for the `bcrypt` library.            |
+| `@types/jsonwebtoken`     | Provides TypeScript type definitions for the `jsonwebtoken` library.      |
+| `@types/express-validator`| Provides TypeScript type definitions for the `express-validator` library. |
 
 ### Configuration and New Files
 
 These files configure the behavior of the tools we use or are new files introduced in the project.
 
-| File/Variable          | Description                                                                 |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `tsconfig.json`      | Configures the TypeScript compiler (`tsc`) with rules for compiling our code. |
-| `jest.config.js`     | Configures the Jest testing framework, telling it how to find and run tests.  |
-| `.gitignore`         | Tells Git which files and folders to ignore (e.g., `node_modules`, `dist`). |
-| `Dockerfile`         | Contains instructions for building a Docker image of our application.     |
-| `docker-compose.yml` | Defines and runs our multi-container Docker application.                 |
-| `.env`               | Stores environment-specific variables like the `PORT`, `MONGO_URI`, and `JWT_SECRET`.                   |
-| `MONGO_URI` (in `.env`) | The connection string for the MongoDB database.                             |
-| `JWT_SECRET` (in `.env`)| A secret key used to sign and verify JSON Web Tokens.                       |
-| `src/infra/database/mongoose.ts` | Handles the connection to the MongoDB database.                           |
+| File/Variable                         | Description                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| `tsconfig.json`                       | Configures the TypeScript compiler (`tsc`) with rules for compiling our code. |
+| `jest.config.js`                      | Configures the Jest testing framework, telling it how to find and run tests.  |
+| `.gitignore`                          | Tells Git which files and folders to ignore (e.g., `node_modules`, `dist`). |
+| `Dockerfile`                          | Contains instructions for building a Docker image of our application.     |
+| `docker-compose.yml`                  | Defines and runs our multi-container Docker application.                 |
+| `.env`                                | Stores environment-specific variables like the `PORT`, `MONGO_URI`, and `JWT_SECRET`.                   |
+| `MONGO_URI` (in `.env`)               | The connection string for the MongoDB database.                             |
+| `JWT_SECRET` (in `.env`)              | A secret key used to sign and verify JSON Web Tokens.                       |
+| `src/infra/database/mongoose.ts`      | Handles the connection to the MongoDB database.                           |
 | `src/app/repositories/models/Studio.ts` | Defines the Mongoose schema and model for a Studio.                       |
 | `src/app/repositories/models/User.ts`   | Defines the Mongoose schema and model for a User, including password hashing. |
 | `src/app/services/AuthService.ts`     | Contains the business logic for user registration and login.              |
 | `src/app/controllers/AuthController.ts` | Handles HTTP requests related to authentication.                          |
 | `src/infra/http/routes/auth.routes.ts` | Defines the API routes for authentication.                                |
 | `src/shared/middlewares/auth.ts`      | Middleware to authenticate requests using JWT.                            |
-| `tests/auth.test.ts`                 | Contains tests for the authentication flow.                               |
+| `tests/auth.test.ts`                  | Contains tests for the authentication flow.                               |
 | `src/app/repositories/models/Asset.ts`  | Defines the Mongoose schema and model for an Asset.                       |
 | `src/app/repositories/AssetRepository.ts` | Abstracts the data access logic for Assets.                               |
 | `src/app/services/AssetService.ts`      | Contains the business logic for asset creation and retrieval.             |
 | `src/app/controllers/AssetController.ts`  | Handles HTTP requests related to assets.                                  |
 | `src/infra/http/routes/asset.routes.ts` | Defines the API routes for assets, protected by authentication.           |
 | `tests/asset.service.test.ts`         | Contains service-level tests for the asset business logic.                |
-| `src/shared/errors/DomainError.ts` | Defines an abstract base class for custom domain-specific errors.         |
-| `src/shared/errors/ValidationError.ts` | Represents validation-related errors (e.g., missing required fields).     |
+| `src/shared/errors/DomainError.ts`    | Defines an abstract base class for custom domain-specific errors.         |
+| `src/shared/errors/ValidationError.ts`| Represents validation-related errors (e.g., missing required fields).     |
 | `src/shared/errors/AuthorizationError.ts`| Represents authorization-related errors (e.g., insufficient permissions). |
-| `src/shared/errors/RenderError.ts`     | Represents errors specific to rendering failures.                         |
+| `src/shared/errors/RenderError.ts`    | Represents errors specific to rendering failures.                         |
 | `src/shared/middlewares/correlationId.ts` | Assigns a unique correlation ID to each incoming request for tracing.     |
-| `src/infra/logging/logger.ts`          | Configures Winston for structured logging across the application.         |
+| `src/infra/logging/logger.ts`         | Configures Winston for structured logging across the application.         |
 | `src/shared/middlewares/requestLogger.ts` | Logs details of incoming HTTP requests, including their correlation ID.   |
-| `src/infra/metrics/metrics.ts`         | Configures Prometheus metrics collection, including HTTP request counts.  |
-| `src/infra/http/metrics.ts`            | Exposes an HTTP endpoint (`/metrics`) for Prometheus to scrape metrics.   |
-| `/ready` endpoint (in `health.ts`)   | An endpoint indicating the application is ready to handle requests (beyond just being alive). |
+| `src/infra/metrics/metrics.ts`        | Configures Prometheus metrics collection, including HTTP request counts.  |
+| `src/infra/http/metrics.ts`           | Exposes an HTTP endpoint (`/metrics`) for Prometheus to scrape metrics.   |
+| `/ready` endpoint (in `health.ts`)    | An endpoint indicating the application is ready to handle requests (beyond just being alive). |
+| `src/infra/http/validators/asset.validators.ts` | Defines validation rules for asset-related HTTP requests.                   |
+| `tests/asset.api.test.ts`             | Contains comprehensive API tests for asset CRUD operations, including pagination and ownership checks. |
