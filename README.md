@@ -52,3 +52,79 @@ These files configure the behavior of the tools we use.
 | `.env`               | Stores environment-specific variables like the `PORT`.                   |
 
 ---
+
+🎬 **— MongoDB + Authentication (Senior Backend Mode)**
+
+> *“Database design vs React state for animation data”*
+
+You’re officially moving from **“server exists”** → **“system of record exists.”**
+Today is where backend engineering truly begins.
+
+---
+
+##  MENTAL MODEL (VERY IMPORTANT)
+
+Before code, let’s reframe how you should think.
+
+### React State vs Database (Core Shift)
+
+| React State    | Backend Database      |
+| -------------- | --------------------- |
+| Ephemeral      | Persistent            |
+| UI convenience | Legal source of truth |
+| Optimistic     | Defensive             |
+| User-owned     | Organization-owned    |
+| Easy to mutate | Must be auditable     |
+
+> 🎯 In an animation studio, **MongoDB is the studio vault**.
+> React is just a *viewer/editor*.
+
+---
+
+# GOALS
+
+By the end of today, you will have:
+
+✅ MongoDB connected (production-safe pattern)
+✅ Multi-tenant **Studio → Users** data model
+✅ Authentication with **JWT + refresh tokens (foundation)**
+✅ Password hashing (bcrypt)
+✅ Role-based identity modeling (Artist, Director, Producer)
+✅ Auth middleware (protect APIs like real studios do)
+✅ Tests for auth flows
+
+This is **enterprise identity infrastructure**.
+
+---
+
+## New Tools, Dependencies, and Configuration
+
+### Runtime Dependencies (`dependencies`)
+
+| Package        | Description                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| `mongoose`     | An Object Data Modeling (ODM) library for MongoDB and Node.js.    |
+| `bcrypt`       | A library for hashing passwords securely.                         |
+| `jsonwebtoken` | Implements JSON Web Tokens (JWT) for secure authentication.       |
+
+### Development Dependencies (`devDependencies`)
+
+| Package             | Description                                                           |
+| ------------------- | --------------------------------------------------------------------- |
+| `@types/bcrypt`     | Provides TypeScript type definitions for the `bcrypt` library.        |
+| `@types/jsonwebtoken` | Provides TypeScript type definitions for the `jsonwebtoken` library. |
+
+### Configuration and New Files
+
+| File/Variable          | Description                                                                 |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `MONGO_URI` (in `.env`) | The connection string for the MongoDB database.                             |
+| `JWT_SECRET` (in `.env`)| A secret key used to sign and verify JSON Web Tokens.                       |
+| `src/infra/database/mongoose.ts` | Handles the connection to the MongoDB database.                           |
+| `src/app/repositories/models/Studio.ts` | Defines the Mongoose schema and model for a Studio.                       |
+| `src/app/repositories/models/User.ts`   | Defines the Mongoose schema and model for a User, including password hashing. |
+| `src/app/services/AuthService.ts`     | Contains the business logic for user registration and login.              |
+| `src/app/controllers/AuthController.ts` | Handles HTTP requests related to authentication.                          |
+| `src/infra/http/routes/auth.routes.ts` | Defines the API routes for authentication.                                |
+| `src/shared/middlewares/auth.ts`      | Middleware to authenticate requests using JWT.                            |
+| `tests/auth.test.ts`                 | Contains tests for the authentication flow.                               |
