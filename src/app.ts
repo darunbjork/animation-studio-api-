@@ -6,6 +6,7 @@ import { json } from "body-parser";
 // We will create these files later
 import { healthRouter } from "./infra/http/health";
 import { errorHandler } from "./shared/middlewares/errorHandler";
+import { authRouter } from "./infra/http/routes/auth.routes";
 
 export const app = express();
 
@@ -25,6 +26,7 @@ app.use(json({ limit: "10mb" }));
 
 // Routes (will be uncommented once healthRouter is created)
 app.use("/health", healthRouter);
+app.use("/auth", authRouter);
 
 // Global error handler (must be last) (will be uncommented once errorHandler is created)
 app.use(errorHandler);
