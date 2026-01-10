@@ -227,7 +227,7 @@ This work accomplishes:
 ✅ Studio ownership enforcement (multi-tenant safety)
 ✅ Input validation (HTTP boundary)
 ✅ Consistent REST contracts
-✅ API patterns that scale to **millions of assets**
+✅ API patterns that scale to **illions of assets**
 
 ---
 
