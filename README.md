@@ -276,6 +276,20 @@ This is **animation-grade backend engineering**.
 
 ---
 
+🔗 FRONTEND CONNECTION
+
+| Frontend                | Backend               |
+| ----------------------- | --------------------- |
+| `<input type="file" />` | `multer` stream       |
+| Upload progress         | chunked stream        |
+| Retry                   | resumable logic later |
+| Preview                 | pipeline output       |
+
+Frontend handles **UX**.
+Backend handles **truth + safety**.
+
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.
@@ -371,3 +385,16 @@ To generate a secure `JWT_SECRET` for your `.env` file, you can use the followin
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
+
+### Step 4 — Create the file (this must succeed first)
+
+Run this exact command in your terminal:
+```bash
+echo "This is a dummy character model data." > character.fbx
+```
+Then confirm the file exists:
+```bash
+ls -l character.fbx
+```
+If you see the file listed, you're good.
+If you don’t see it, you’re probably in the wrong directory — just tell me what OS you’re on and I’ll guide you.
