@@ -278,68 +278,36 @@ This is **animation-grade backend engineering**.
 
 ### Implementation Details for File Upload System
 
-#### Why Regular Uploads Fail (Important)
-Traditionally, many web applications buffer entire file uploads into memory before processing. This approach is highly problematic for large files:
-*   **Memory Exhaustion**: Loading multi-gigabyte files into Node.js memory can quickly consume all available RAM, leading to application crashes (`Out Of Memory` errors).
-*   **Performance Degradation**: Buffering blocks the event loop, impacting concurrent user requests and overall server responsiveness.
-*   **Resource Inefficiency**: Wastes server resources, especially on render machines that might have limited available memory for non-rendering tasks.
+This system handles large file uploads efficiently by prioritizing streaming over buffering and abstracting storage.
 
-#### The Experienced Engineer's Solution: Streaming
-Instead of buffering, the robust solution involves streaming files directly to disk or object storage. This ensures:
-*   **No Memory Spikes**: Files are processed in chunks, minimizing memory footprint.
-*   **High Concurrency**: The server can handle many simultaneous large uploads without degradation.
-*   **Crash-Safe**: Intermediate storage (`tmp` directory) allows for safer handling and potential recovery.
+#### Key Principles
 
-#### Storage Abstraction (Key Senior Move)
-To ensure flexibility and future-proofing, a storage abstraction layer is introduced. This separates the application's storage logic from the underlying storage mechanism.
-*   **`StorageProvider.ts`**: Defines a contract (`interface`) for how files are saved. This allows easy swapping of storage providers (e.g., local filesystem, AWS S3, Google Cloud Storage) without altering core application logic.
-*   **`LocalStorageProvider.ts`**: An initial implementation of `StorageProvider` that saves files to the local filesystem. This is suitable for development and learning, demonstrating the streaming principle. Files are moved directly from Multer's temporary storage to their final destination, avoiding memory buffering.
-
-#### Multer Configuration (Safe Defaults)
-`multer` is configured with safe and efficient defaults:
-*   **`dest: path.resolve("tmp")`**: Specifies a temporary directory where Multer will store uploaded file chunks before they are moved to their final location by the storage provider. This leverages the operating system's efficient handling of temporary files.
-*   **`limits: { fileSize: 10 * 1024 * 1024 * 1024 }`**: Sets a generous file size limit (10GB) to prevent denial-of-service attacks or accidental uploads of excessively large files, while still accommodating typical animation asset sizes.
-
-#### Extending the Asset Model (File Metadata)
-The `Asset` model (`src/app/repositories/models/Asset.ts`) is updated to include a `file` object. This stores essential metadata about the uploaded file:
-*   **`path`**: The location where the file is stored (e.g., on disk or a reference to object storage).
-*   **`size`**: The size of the uploaded file in bytes.
-*   **`mimeType`**: The file's MIME type (e.g., `image/jpeg`, `video/mp4`, `application/octet-stream`).
-This ensures that the database stores *pointers* to the files, not the binary data itself, which is crucial for performance and scalability.
-
-#### The Upload Service (Pipeline Entry Point)
-The `AssetUploadService` (`src/app/services/AssetUploadService.ts`) acts as the central logic for handling asset uploads. It orchestrates the process:
-*   **Validation**: Ensures a file is actually provided and that the `assetId` exists and belongs to the correct studio.
-*   **Storage**: Utilizes the `LocalStorageProvider` to save the incoming file stream to disk.
-*   **Metadata Update**: Updates the `Asset` document in MongoDB with the file's path, size, and MIME type.
-This service is designed to be the gateway for future asset pipeline steps like thumbnail generation, transcoding, and automated validation.
-
-#### The Upload Controller
-The `AssetUploadController` (`src/app/controllers/AssetUploadController.ts`) is a thin HTTP translation layer. It:
-*   Extracts necessary information from the `Request` object (`req.user.studioId`, `req.user.userId`, `req.params.id`, `req.file`).
-*   Delegates the core business logic to the `AssetUploadService`.
-*   Sends back the updated asset information as an HTTP response.
-
-#### The Upload Route (Secured + Streaming)
-A dedicated route (`src/infra/http/routes/asset-upload.routes.ts`) is created for handling file uploads.
-*   **`assetUploadRouter.post("/:id/upload", ...)`**: Defines a POST endpoint for uploading a file to a specific asset ID.
-*   **`authenticate`**: Ensures only authenticated and authorized users can upload files.
-*   **`upload.single("file")`**: Multer middleware that processes the incoming multipart form data, specifically looking for a field named "file". It handles the streaming of the file to the temporary directory.
+| Principle             | Description                                                                                             | Why it Matters                                                                        |
+| :-------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
+| **Streaming Uploads** | Files are processed in chunks and written directly to disk/storage, avoiding loading into memory.         | Prevents memory exhaustion, supports large files (GBs), and maintains server responsiveness. |
+| **Storage Abstraction** | A `StorageProvider` interface (`src/infra/storage/StorageProvider.ts`) defines how files are saved.     | Allows easy swapping between local storage, S3, GCS, etc., without changing core logic. |
+| **Local Disk Implementation** | `LocalStorageProvider.ts` saves files to `uploads/{studioId}/{assetId}/v{version}`.            | Demonstrates streaming: files move from Multer's temp directory to final destination.     |
+| **Multer Configuration** | Configured with `dest: path.resolve("tmp")` and a `fileSize` limit (e.g., 10GB).                         | Uses OS's efficient temp file handling; protects against DoS/excessively large uploads.   |
+| **Asset Model Extension** | `Asset.ts` (`src/app/repositories/models/Asset.ts`) now includes a `file` object.                   | Stores metadata (`path`, `size`, `mimeType`) about the uploaded file; database stores *pointers*, not blobs. |
+| **Upload Service**    | `AssetUploadService.ts` orchestrates the upload: validates, saves via `LocalStorageProvider`, updates asset metadata. | Acts as the entry point for the asset pipeline (thumbnail, transcoding, etc.).            |
+| **Upload Controller** | `AssetUploadController.ts` is a thin layer, extracting `req.user`, `req.params`, `req.file` and delegating to the service. | Keeps controller focused on HTTP translation.                                         |
+| **Upload Route**      | `asset-upload.routes.ts` defines `POST /assets/:id/upload`, using `authenticate` and `upload.single("file")`. | Secured endpoint for file uploads, processing multipart form data.                    |
 
 #### Why This Scales to Real Studios
-This approach to file uploads scales effectively because:
-*   **Streaming**: Prevents memory exhaustion, crucial for large animation files.
-*   **Abstraction**: Allows seamless migration to cloud object storage (S3, GCS) later.
-*   **Metadata Separation**: Keeps database lean and fast, storing references not blobs.
-*   **Security**: Ensures studio isolation and authentication protect valuable IP.
-*   **Pipeline-Ready**: The service structure provides clear hooks for integrating complex asset processing workflows.
+
+*   **No Memory Spikes**: Handles massive files without crashing the server.
+*   **Storage Flexibility**: Easy migration to cloud object storage.
+*   **Metadata vs. Blobs**: Keeps MongoDB performant by storing references.
+*   **Security**: Studio isolation protects valuable intellectual property.
+*   **Pipeline-Ready**: Designed for integration with complex asset processing workflows.
 
 #### Common Experienced Engineer Warnings
-*   ❌ **Never store files in MongoDB**: MongoDB is a document database, not a filesystem. Storing large binary data directly (blobs) degrades database performance and is inefficient. Store metadata/pointers instead.
-*   ❌ **Never buffer large uploads**: Buffering consumes excessive memory and can crash servers. Always stream.
-*   ❌ **Never trust file extensions**: Validate file types based on MIME types and actual content, not just the extension, to prevent security vulnerabilities.
-*   ✅ **Always abstract storage**: Decouple your application from the storage implementation to maintain flexibility.
-*   ✅ **Always isolate tenants**: Ensure that one studio's assets are strictly inaccessible to another.
+
+*   ❌ Never store files directly in MongoDB.
+*   ❌ Never buffer large uploads into server memory.
+*   ❌ Never trust file extensions; validate MIME types and content.
+*   ✅ Always abstract your storage layer.
+*   ✅ Always enforce tenant isolation for assets.
 
 ---
 
@@ -408,63 +376,36 @@ This is **senior-level distributed thinking**.
 
 ### Implementation Details for Real-Time Collaboration
 
-#### Why Socket.IO (Enterprise Context)
-While raw WebSockets offer real-time communication, Socket.IO provides crucial enterprise-grade features:
-*   **Reconnection Handling**: Automatically manages reconnections when network connectivity is lost or interrupted, crucial for artists with unstable connections.
-*   **Room Abstraction**: Simplifies broadcasting events to specific groups of connected clients (e.g., all users in a particular studio).
-*   **Transport Fallback**: Gracefully degrades to HTTP long-polling if WebSockets are not available, ensuring broader compatibility.
-*   **Event Semantics**: Provides a simple, event-based API for sending and receiving structured messages.
-These features are vital for maintaining robust real-time communication in a demanding production environment.
+This system provides collaborative features using WebSocket technology, specifically Socket.IO, integrated with Express.
 
-#### Socket Server (Infra Layer)
-The `setupSocket` function (`src/infra/realtime/socket.ts`) initializes and configures the Socket.IO server:
-*   **`io = new Server(server, { cors: { origin: "*" } });`**: Attaches Socket.IO to the existing HTTP server and configures CORS for client connections.
-*   **`io.use((socket, next) => { ... });`**: Implements middleware to authenticate WebSocket connections. The JWT from the client's handshake is verified, and user data (`studioId`, `userId`, `role`) is attached to the `socket.data.user` property. This ensures that only authorized users can establish a real-time connection.
-*   **`io.on("connection", (socket) => { ... });`**: Handles new client connections. The connected user is automatically joined to a studio-specific room (`studio:${studioId}`), ensuring that events are only broadcast to relevant users.
+#### Key Aspects
 
-#### Integrate Socket with Server
-The `server.ts` file is updated to create an `http.Server` that wraps the Express `app`. This allows Socket.IO to share the same HTTP server, listening on the same port.
-*   **`const server = http.createServer(app);`**: Creates the HTTP server.
-*   **`setupSocket(server);`**: Integrates Socket.IO with the HTTP server.
-*   **`server.listen(PORT, ...);`**: The HTTP server (now handling both Express and Socket.IO) starts listening for requests.
+| Aspect              | Description                                                                                             | Why it Matters                                                                        |
+| :------------------ | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
+| **Socket.IO Choice** | Provides robust features like reconnection handling, room abstraction, and transport fallbacks.              | Crucial for reliable real-time communication in production environments with varying network conditions. |
+| **Socket Server**   | `src/infra/realtime/socket.ts` initializes the Socket.IO server and implements authentication middleware. | Ensures only authorized users establish WebSocket connections; user data (`studioId`, `userId`, `role`) attached to `socket.data`. |
+| **Server Integration** | `server.ts` uses `http.createServer(app)` to wrap the Express app, allowing Socket.IO to share the same HTTP server. | Efficiently handles both HTTP requests and WebSocket connections on the same port.     |
+| **Domain Events**   | Paradigm shifts from requests to events (e.g., `asset:commented`, `asset:approved`).                         | Events reflect changes in application state, driving UI updates and notifications.    |
+| **Comment Event**   | `socket.on("asset:comment", ...)` handler emits `asset:commented` to studio-scoped rooms.                | Allows real-time commenting; ensures only relevant users receive updates for their studio. |
+| **Approval Event**  | `socket.on("asset:approve", ...)` handler checks user role (DIRECTOR/PRODUCER) before emitting `asset:approved` to studio rooms. | Enforces role-based authorization for real-time events.                               |
+| **Persistence Note**| Current focus is on real-time fan-out; comment/approval persistence handled in later phases.           | Real-time communication and data persistence are distinct problems, often decoupled.  |
 
-#### Domain Events (Key Senior Shift)
-In real-time systems, the paradigm shifts from traditional "requests" to "events". Instead of requesting data, the system emits events that reflect changes in the application state.
-*   **`asset:commented`**: An event indicating a new comment has been added to an asset.
-*   **`asset:approved`**: An event signifying an asset has been approved.
-*   **`asset:changesRequested`**: An event indicating changes are required for an asset.
-These events drive UI updates, trigger notifications, and feed activity logs.
+#### Why This Scales to 1000+ Artists
 
-#### Real-Time Comment Event
-The `asset:comment` event handler allows clients to send comments on assets in real-time.
-*   When a client emits `asset:comment` with a payload, the server processes it.
-*   User and studio context are derived from the authenticated socket.
-*   The server then emits an `asset:commented` event to all clients within the specific `studio:${studioId}` room. This ensures that only relevant users receive the comment updates.
-
-#### Approval Event (Role-Aware)
-The `asset:approve` event handler enables role-based approvals in real-time.
-*   When a client emits `asset:approve`, the server first checks if the connected user's `role` is either "DIRECTOR" or "PRODUCER".
-*   If authorized, the server emits an `asset:approved` event to the `studio:${studioId}` room, notifying all relevant clients of the approval.
-This demonstrates how authorization extends to real-time events, not just traditional API calls.
-
-#### Why We Don’t Write to DB (Yet)
-The current implementation focuses on real-time fan-out and event propagation. Persistence of comments and approvals (e.g., writing them to MongoDB) will be handled in subsequent phases to keep the scope focused on establishing the real-time communication layer. Real-time communication and data persistence solve different problems and are often decoupled.
-
-#### Scaling This to 1000+ Artists
-This real-time architecture is designed for scalability:
-*   **Horizontal Scaling**: Multiple Socket.IO server instances can be run behind a load balancer.
-*   **Sticky Sessions (or Redis Adapter)**: For deployments with multiple Socket.IO servers, sticky sessions or a Redis adapter (for pub/sub) ensure that clients consistently connect to the same server or that events are correctly propagated across all servers.
-*   **Event Fan-out**: Efficiently broadcasts events to numerous connected clients without overloading individual server instances.
+*   **Horizontal Scaling**: Supports multiple Socket.IO server instances behind a load balancer.
+*   **Sticky Sessions/Redis Adapter**: Ensures consistent client connections and event propagation across servers.
+*   **Event Fan-out**: Efficiently broadcasts events to many connected clients.
 *   **Studio Isolation**: Ensures events are only delivered to clients within the same studio, preventing data leakage.
 
 #### Common Senior Mistakes (Avoid These)
-*   ❌ **Broadcasting to everyone**: Inefficient and insecure; always scope events to relevant users/rooms.
-*   ❌ **No auth on socket connection**: Critical security flaw; authenticate all WebSocket connections upfront.
-*   ❌ **Using sockets for CRUD**: WebSockets are for events/real-time updates, not for standard create/read/update/delete operations which are best handled by REST APIs.
-*   ❌ **Storing business logic in frontend**: Keep business logic on the backend, ensuring a single source of truth and consistent enforcement of rules.
-*   ✅ **Event-driven backend**: Embrace an event-driven paradigm for real-time systems.
-*   ✅ **Scoped rooms**: Utilize Socket.IO rooms to manage event distribution effectively.
-*   ✅ **Stateless servers**: Design servers to be stateless for easier horizontal scaling.
+
+*   ❌ Broadcasting to everyone (inefficient and insecure).
+*   ❌ No authentication on WebSocket connections (critical security flaw).
+*   ❌ Using sockets for standard CRUD operations (best handled by REST APIs).
+*   ❌ Storing business logic solely in the frontend.
+*   ✅ Embrace event-driven backend design.
+*   ✅ Utilize scoped rooms for event distribution.
+*   ✅ Design stateless WebSocket servers for scalability.
 
 ---
 
@@ -474,6 +415,101 @@ The frontend (e.g., a React application) integrates with this real-time system:
 *   **React Client Example**: The frontend would initialize a Socket.IO client, passing the JWT for authentication. It would then listen for specific events (`asset:commented`, `asset:approved`) to update its UI in real-time.
 *   **Frontend Renders State**: The React app focuses on rendering the current state received from the backend events and handles user interactions.
 *   **Backend Guarantees Delivery**: The backend is responsible for secure, authorized, and correctly scoped delivery of real-time events.
+
+---
+
+🎬 **Asset Versioning (Senior Backend Mode)**
+
+> *“Git-like versioning for animation assets”*
+
+This work crosses another **major senior boundary**.
+
+CRUD, uploads, and real-time features are foundational, but **without versioning**, an animation studio backend is unusable in real life.
+
+Animation studios **never overwrite assets**.
+They **evolve** them.
+
+---
+
+## MENTAL MODEL (CRITICAL SHIFT)
+
+### Think Git — not Dropbox
+
+| Naive System ❌      | Studio System ✅          |
+| ------------------- | ------------------------ |
+| Replace file        | Create new version       |
+| No history          | Full audit trail         |
+| No rollback         | Instant rollback         |
+| Conflicts overwrite | Conflicts detected       |
+| “Who broke this?”   | “Who changed what & why” |
+
+> 🎯 Assets are **immutable snapshots**.
+> Versions are **the truth**.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Asset version model (immutable)
+✅ Version numbering (v1, v2, v3…)
+✅ Version-linked file storage
+✅ Rollback capability
+✅ Version-aware upload pipeline
+✅ Audit-ready asset history
+
+This is **real studio-grade asset management**.
+
+---
+
+### Implementation Details for Asset Versioning
+
+#### Key Principles
+
+*   **Never overwrite asset files.** Every change creates a new, immutable version.
+*   The `Asset` document becomes a container, and each `AssetVersion` document is a unit of truth.
+
+#### Core Components
+
+| Component                       | Description                                                                                             |
+| :------------------------------ | :------------------------------------------------------------------------------------------------------ |
+| **`AssetVersion` Model**        | (`src/app/repositories/models/AssetVersion.ts`) Captures immutable snapshots: `assetId`, `version`, `createdBy`, `file` metadata, `changeNote`. Unique index on `{ assetId, version }`. |
+| **Update `Asset` Model**        | (`src/app/repositories/models/Asset.ts`) Adds `currentVersion` field, acting as a pointer to the active version. |
+| **Version Repository**          | (`src/app/repositories/AssetVersionRepository.ts`) Provides methods like `getLatestVersion`, `create`, `findByAsset`, `findVersion`. |
+| **Versioned Upload Service**    | (`src/app/services/AssetVersionService.ts`) Handles new version uploads: determines `nextVersion`, saves file to version-specific path, creates `AssetVersion` record, updates parent `Asset`'s `currentVersion`. |
+| **Version Controller**          | (`src/app/controllers/AssetVersionController.ts`) Manages HTTP requests for version uploads (`POST /assets/:id/versions`) and listings (`GET /assets/:id/versions`). |
+| **Version Routes**              | (`src/infra/http/routes/asset-version.routes.ts`) Defines secured routes for version creation and retrieval, mounted under `/assets`. |
+| **Rollback Feature**            | `AssetService` (`src/app/services/AssetService.ts`) includes `rollbackAsset(assetId, studioId, version)` to update `currentVersion` pointer. History is preserved; state is changed safely. |
+
+#### Why This Scales to Real Studios
+
+*   **Non-Destructive Updates**: Old versions are never lost, ensuring robust recovery and historical analysis.
+*   **Full Audit History**: Every change is logged, providing a complete modification trail.
+*   **Safe Collaboration**: Artists can work on different versions or revert changes without affecting others' work.
+*   **Parallel Workflows**: Supports different branches or experimental versions.
+*   **Instant Rollbacks**: Quick reversion to any previous state without complex data migrations.
+
+#### Common Experienced Engineer Warnings
+
+*   ❌ Avoid overwriting files (leads to irreversible data loss).
+*   ❌ Avoid deleting versions (eliminates audit trails).
+*   ❌ Avoid storing versions *inside* the asset document (bloated documents, poor query performance for asset history).
+*   ❌ Ensure unique constraints for version integrity.
+*   ✅ Embrace immutable versions.
+*   ✅ Implement pointer-based rollback.
+*   ✅ Isolate file paths for each version.
+*   ✅ Design for auditability.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+The frontend integration for asset versioning involves:
+*   **Version Dropdown**: A UI element allowing users to select and view different versions of an asset (`GET /assets/:id/versions`).
+*   **Upload New File**: The interface for uploading a new file, which creates a new version (`POST /assets/:id/versions`).
+*   **Rollback Button**: A feature allowing users (with appropriate permissions) to revert an asset to a previous version (`PATCH /assets/:id/rollback`).
+*   **Change Notes**: The `changeNote` field provides context for each version, visible in the UI.
 
 ---
 
@@ -566,6 +602,11 @@ These files configure the behavior of the tools we use or are new files introduc
 | `src/app/controllers/AssetUploadController.ts` | Manages HTTP requests for asset uploads.                                  |
 | `src/infra/http/routes/asset-upload.routes.ts` | Defines the API routes for asset uploads.                                 |
 | `src/infra/realtime/socket.ts`        | Initializes and configures the Socket.IO server for real-time communication, including authentication and event handling. |
+| `src/app/repositories/models/AssetVersion.ts` | Defines the Mongoose schema and model for an Asset Version, capturing immutable snapshots. |
+| `src/app/repositories/AssetVersionRepository.ts` | Provides data access methods specifically for AssetVersion documents, such as retrieving latest version. |
+| `src/app/services/AssetVersionService.ts` | Handles the business logic for creating new asset versions during uploads, managing versioning logic. |
+| `src/app/controllers/AssetVersionController.ts` | Manages HTTP requests related to asset versions, including uploads and listing. |
+| `src/infra/http/routes/asset-version.routes.ts` | Defines the API routes for asset versioning operations.                   |
 
 ### Generating Secrets
 
