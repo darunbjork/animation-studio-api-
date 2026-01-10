@@ -276,6 +276,73 @@ This is **animation-grade backend engineering**.
 
 ---
 
+### Implementation Details for File Upload System
+
+#### Why Regular Uploads Fail (Important)
+Traditionally, many web applications buffer entire file uploads into memory before processing. This approach is highly problematic for large files:
+*   **Memory Exhaustion**: Loading multi-gigabyte files into Node.js memory can quickly consume all available RAM, leading to application crashes (`Out Of Memory` errors).
+*   **Performance Degradation**: Buffering blocks the event loop, impacting concurrent user requests and overall server responsiveness.
+*   **Resource Inefficiency**: Wastes server resources, especially on render machines that might have limited available memory for non-rendering tasks.
+
+#### The Experienced Engineer's Solution: Streaming
+Instead of buffering, the robust solution involves streaming files directly to disk or object storage. This ensures:
+*   **No Memory Spikes**: Files are processed in chunks, minimizing memory footprint.
+*   **High Concurrency**: The server can handle many simultaneous large uploads without degradation.
+*   **Crash-Safe**: Intermediate storage (`tmp` directory) allows for safer handling and potential recovery.
+
+#### Storage Abstraction (Key Senior Move)
+To ensure flexibility and future-proofing, a storage abstraction layer is introduced. This separates the application's storage logic from the underlying storage mechanism.
+*   **`StorageProvider.ts`**: Defines a contract (`interface`) for how files are saved. This allows easy swapping of storage providers (e.g., local filesystem, AWS S3, Google Cloud Storage) without altering core application logic.
+*   **`LocalStorageProvider.ts`**: An initial implementation of `StorageProvider` that saves files to the local filesystem. This is suitable for development and learning, demonstrating the streaming principle. Files are moved directly from Multer's temporary storage to their final destination, avoiding memory buffering.
+
+#### Multer Configuration (Safe Defaults)
+`multer` is configured with safe and efficient defaults:
+*   **`dest: path.resolve("tmp")`**: Specifies a temporary directory where Multer will store uploaded file chunks before they are moved to their final location by the storage provider. This leverages the operating system's efficient handling of temporary files.
+*   **`limits: { fileSize: 10 * 1024 * 1024 * 1024 }`**: Sets a generous file size limit (10GB) to prevent denial-of-service attacks or accidental uploads of excessively large files, while still accommodating typical animation asset sizes.
+
+#### Extending the Asset Model (File Metadata)
+The `Asset` model (`src/app/repositories/models/Asset.ts`) is updated to include a `file` object. This stores essential metadata about the uploaded file:
+*   **`path`**: The location where the file is stored (e.g., on disk or a reference to object storage).
+*   **`size`**: The size of the uploaded file in bytes.
+*   **`mimeType`**: The file's MIME type (e.g., `image/jpeg`, `video/mp4`, `application/octet-stream`).
+This ensures that the database stores *pointers* to the files, not the binary data itself, which is crucial for performance and scalability.
+
+#### The Upload Service (Pipeline Entry Point)
+The `AssetUploadService` (`src/app/services/AssetUploadService.ts`) acts as the central logic for handling asset uploads. It orchestrates the process:
+*   **Validation**: Ensures a file is actually provided and that the `assetId` exists and belongs to the correct studio.
+*   **Storage**: Utilizes the `LocalStorageProvider` to save the incoming file stream to disk.
+*   **Metadata Update**: Updates the `Asset` document in MongoDB with the file's path, size, and MIME type.
+This service is designed to be the gateway for future asset pipeline steps like thumbnail generation, transcoding, and automated validation.
+
+#### The Upload Controller
+The `AssetUploadController` (`src/app/controllers/AssetUploadController.ts`) is a thin HTTP translation layer. It:
+*   Extracts necessary information from the `Request` object (`req.user.studioId`, `req.user.userId`, `req.params.id`, `req.file`).
+*   Delegates the core business logic to the `AssetUploadService`.
+*   Sends back the updated asset information as an HTTP response.
+
+#### The Upload Route (Secured + Streaming)
+A dedicated route (`src/infra/http/routes/asset-upload.routes.ts`) is created for handling file uploads.
+*   **`assetUploadRouter.post("/:id/upload", ...)`**: Defines a POST endpoint for uploading a file to a specific asset ID.
+*   **`authenticate`**: Ensures only authenticated and authorized users can upload files.
+*   **`upload.single("file")`**: Multer middleware that processes the incoming multipart form data, specifically looking for a field named "file". It handles the streaming of the file to the temporary directory.
+
+#### Why This Scales to Real Studios
+This approach to file uploads scales effectively because:
+*   **Streaming**: Prevents memory exhaustion, crucial for large animation files.
+*   **Abstraction**: Allows seamless migration to cloud object storage (S3, GCS) later.
+*   **Metadata Separation**: Keeps database lean and fast, storing references not blobs.
+*   **Security**: Ensures studio isolation and authentication protect valuable IP.
+*   **Pipeline-Ready**: The service structure provides clear hooks for integrating complex asset processing workflows.
+
+#### Common Experienced Engineer Warnings
+*   ❌ **Never store files in MongoDB**: MongoDB is a document database, not a filesystem. Storing large binary data directly (blobs) degrades database performance and is inefficient. Store metadata/pointers instead.
+*   ❌ **Never buffer large uploads**: Buffering consumes excessive memory and can crash servers. Always stream.
+*   ❌ **Never trust file extensions**: Validate file types based on MIME types and actual content, not just the extension, to prevent security vulnerabilities.
+*   ✅ **Always abstract storage**: Decouple your application from the storage implementation to maintain flexibility.
+*   ✅ **Always isolate tenants**: Ensure that one studio's assets are strictly inaccessible to another.
+
+---
+
 🔗 FRONTEND CONNECTION
 
 | Frontend                | Backend               |
@@ -287,6 +354,126 @@ This is **animation-grade backend engineering**.
 
 Frontend handles **UX**.
 Backend handles **truth + safety**.
+
+---
+
+🎬 **Real-Time Collaboration (Senior Backend Mode)**
+
+> *“React real-time vs backend real-time for animation reviews”*
+
+This work introduces **true senior territory**: real-time collaboration.
+
+CRUD and uploads are foundational, but **real-time collaboration** is where systems evolve into *platforms*.
+
+Animation studios *live* in real-time environments:
+
+* Directors comment while artists scrub frames
+* Producers approve shots instantly
+* Teams across time zones collaborate live
+
+This dynamic collaboration cannot be effectively simulated with traditional polling mechanisms.
+
+---
+
+## MENTAL MODEL (RESET)
+
+### React Real-Time vs Backend Real-Time
+
+| Frontend (React) | Backend (You)          |
+| ---------------- | ---------------------- |
+| WebSocket client | WebSocket authority    |
+| Optimistic UI    | Event ordering & truth |
+| Local state      | Shared studio state    |
+| useEffect        | Event-driven system    |
+| UI updates       | Domain events          |
+
+> 🎯 Backend real-time = **shared source of truth + fan-out**
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ WebSocket server integrated with Express
+✅ Studio-scoped real-time rooms
+✅ Asset review comments (live)
+✅ Approval events (Director → Artists)
+✅ Authorization on socket connections
+✅ Event-driven mental model (critical for render farms later)
+
+This is **senior-level distributed thinking**.
+
+---
+
+### Implementation Details for Real-Time Collaboration
+
+#### Why Socket.IO (Enterprise Context)
+While raw WebSockets offer real-time communication, Socket.IO provides crucial enterprise-grade features:
+*   **Reconnection Handling**: Automatically manages reconnections when network connectivity is lost or interrupted, crucial for artists with unstable connections.
+*   **Room Abstraction**: Simplifies broadcasting events to specific groups of connected clients (e.g., all users in a particular studio).
+*   **Transport Fallback**: Gracefully degrades to HTTP long-polling if WebSockets are not available, ensuring broader compatibility.
+*   **Event Semantics**: Provides a simple, event-based API for sending and receiving structured messages.
+These features are vital for maintaining robust real-time communication in a demanding production environment.
+
+#### Socket Server (Infra Layer)
+The `setupSocket` function (`src/infra/realtime/socket.ts`) initializes and configures the Socket.IO server:
+*   **`io = new Server(server, { cors: { origin: "*" } });`**: Attaches Socket.IO to the existing HTTP server and configures CORS for client connections.
+*   **`io.use((socket, next) => { ... });`**: Implements middleware to authenticate WebSocket connections. The JWT from the client's handshake is verified, and user data (`studioId`, `userId`, `role`) is attached to the `socket.data.user` property. This ensures that only authorized users can establish a real-time connection.
+*   **`io.on("connection", (socket) => { ... });`**: Handles new client connections. The connected user is automatically joined to a studio-specific room (`studio:${studioId}`), ensuring that events are only broadcast to relevant users.
+
+#### Integrate Socket with Server
+The `server.ts` file is updated to create an `http.Server` that wraps the Express `app`. This allows Socket.IO to share the same HTTP server, listening on the same port.
+*   **`const server = http.createServer(app);`**: Creates the HTTP server.
+*   **`setupSocket(server);`**: Integrates Socket.IO with the HTTP server.
+*   **`server.listen(PORT, ...);`**: The HTTP server (now handling both Express and Socket.IO) starts listening for requests.
+
+#### Domain Events (Key Senior Shift)
+In real-time systems, the paradigm shifts from traditional "requests" to "events". Instead of requesting data, the system emits events that reflect changes in the application state.
+*   **`asset:commented`**: An event indicating a new comment has been added to an asset.
+*   **`asset:approved`**: An event signifying an asset has been approved.
+*   **`asset:changesRequested`**: An event indicating changes are required for an asset.
+These events drive UI updates, trigger notifications, and feed activity logs.
+
+#### Real-Time Comment Event
+The `asset:comment` event handler allows clients to send comments on assets in real-time.
+*   When a client emits `asset:comment` with a payload, the server processes it.
+*   User and studio context are derived from the authenticated socket.
+*   The server then emits an `asset:commented` event to all clients within the specific `studio:${studioId}` room. This ensures that only relevant users receive the comment updates.
+
+#### Approval Event (Role-Aware)
+The `asset:approve` event handler enables role-based approvals in real-time.
+*   When a client emits `asset:approve`, the server first checks if the connected user's `role` is either "DIRECTOR" or "PRODUCER".
+*   If authorized, the server emits an `asset:approved` event to the `studio:${studioId}` room, notifying all relevant clients of the approval.
+This demonstrates how authorization extends to real-time events, not just traditional API calls.
+
+#### Why We Don’t Write to DB (Yet)
+The current implementation focuses on real-time fan-out and event propagation. Persistence of comments and approvals (e.g., writing them to MongoDB) will be handled in subsequent phases to keep the scope focused on establishing the real-time communication layer. Real-time communication and data persistence solve different problems and are often decoupled.
+
+#### Scaling This to 1000+ Artists
+This real-time architecture is designed for scalability:
+*   **Horizontal Scaling**: Multiple Socket.IO server instances can be run behind a load balancer.
+*   **Sticky Sessions (or Redis Adapter)**: For deployments with multiple Socket.IO servers, sticky sessions or a Redis adapter (for pub/sub) ensure that clients consistently connect to the same server or that events are correctly propagated across all servers.
+*   **Event Fan-out**: Efficiently broadcasts events to numerous connected clients without overloading individual server instances.
+*   **Studio Isolation**: Ensures events are only delivered to clients within the same studio, preventing data leakage.
+
+#### Common Senior Mistakes (Avoid These)
+*   ❌ **Broadcasting to everyone**: Inefficient and insecure; always scope events to relevant users/rooms.
+*   ❌ **No auth on socket connection**: Critical security flaw; authenticate all WebSocket connections upfront.
+*   ❌ **Using sockets for CRUD**: WebSockets are for events/real-time updates, not for standard create/read/update/delete operations which are best handled by REST APIs.
+*   ❌ **Storing business logic in frontend**: Keep business logic on the backend, ensuring a single source of truth and consistent enforcement of rules.
+*   ✅ **Event-driven backend**: Embrace an event-driven paradigm for real-time systems.
+*   ✅ **Scoped rooms**: Utilize Socket.IO rooms to manage event distribution effectively.
+*   ✅ **Stateless servers**: Design servers to be stateless for easier horizontal scaling.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+The frontend (e.g., a React application) integrates with this real-time system:
+*   **React Client Example**: The frontend would initialize a Socket.IO client, passing the JWT for authentication. It would then listen for specific events (`asset:commented`, `asset:approved`) to update its UI in real-time.
+*   **Frontend Renders State**: The React app focuses on rendering the current state received from the backend events and handles user interactions.
+*   **Backend Guarantees Delivery**: The backend is responsible for secure, authorized, and correctly scoped delivery of real-time events.
 
 ---
 
@@ -311,6 +498,7 @@ These are the packages required for the application to run in production.
 | `prom-client`        | A Prometheus client for Node.js, enabling metric collection.                |
 | `express-validator`  | A middleware for Express.js that provides validation and sanitization features. |
 | `multer`             | A middleware for handling `multipart/form-data`, primarily for file uploads. |
+| `socket.io`          | Enables real-time, bidirectional, event-based communication between client and server. |
 
 ### Development Dependencies (`devDependencies`)
 
@@ -377,6 +565,7 @@ These files configure the behavior of the tools we use or are new files introduc
 | `src/app/services/AssetUploadService.ts`| Handles the business logic for uploading assets, interacting with storage and asset repository. |
 | `src/app/controllers/AssetUploadController.ts` | Manages HTTP requests for asset uploads.                                  |
 | `src/infra/http/routes/asset-upload.routes.ts` | Defines the API routes for asset uploads.                                 |
+| `src/infra/realtime/socket.ts`        | Initializes and configures the Socket.IO server for real-time communication, including authentication and event handling. |
 
 ### Generating Secrets
 
