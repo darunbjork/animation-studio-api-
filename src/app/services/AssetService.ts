@@ -1,5 +1,5 @@
 import { AssetRepository } from "../repositories/AssetRepository";
-import { AppError } from "../../shared/errors/AppError";
+import { ValidationError } from "../../shared/errors/ValidationError";
 
 export class AssetService {
   static async createAsset(data: {
@@ -10,7 +10,7 @@ export class AssetService {
     metadata?: any;
   }) {
     if (!data.name) {
-      throw new AppError("Asset name is required", 400);
+      throw new ValidationError("Asset name is required");
     }
 
     return AssetRepository.create({

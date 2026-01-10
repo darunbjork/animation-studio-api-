@@ -1,5 +1,5 @@
 import { AssetService } from "../src/app/services/AssetService";
-import { AppError } from "../src/shared/errors/AppError";
+import { ValidationError } from "../src/shared/errors/ValidationError";
 
 describe("AssetService", () => {
   it("should reject asset without name", async () => {
@@ -10,6 +10,6 @@ describe("AssetService", () => {
         name: "",
         type: "CHARACTER",
       })
-    ).rejects.toThrow(new AppError("Asset name is required", 400));
+    ).rejects.toThrow(new ValidationError("Asset name is required"));
   });
 });

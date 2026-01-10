@@ -9,3 +9,7 @@ healthRouter.get("/", (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+healthRouter.get("/ready", (_req, res) => {
+  res.status(200).json({ ready: true });
+});
