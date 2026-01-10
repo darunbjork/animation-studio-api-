@@ -5,11 +5,13 @@ import { StudioModel } from "../src/app/repositories/models/Studio";
 import { UserModel } from "../src/app/repositories/models/User";
 import jwt from "jsonwebtoken";
 import { env } from "../src/config/env";
+import { AssetModel } from "../src/app/repositories/models/Asset";
 
 describe("Asset API", () => {
   let token: string;
   let studioId: string;
   let userId: string;
+  let assetId: string;
 
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URI || "");
@@ -32,6 +34,21 @@ describe("Asset API", () => {
     );
   });
 
+  beforeEach(async () => {
+    // Clean up assets before each test
+    await AssetModel.deleteMany({});
+    // Create a new asset for each test to ensure isolation
+    const createRes = await request(app)
+      .post("/assets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Asset for Test",
+        type: "CHARACTER",
+        metadata: { polyCount: 1000, format: "fbx", previewUrl: "http://example.com/preview.jpg" },
+      });
+    assetId = createRes.body._id;
+  });
+
   afterAll(async () => {
     if (mongoose.connection.db) {
       await mongoose.connection.db.dropDatabase();
@@ -44,13 +61,13 @@ describe("Asset API", () => {
       .post("/assets")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        name: "Test Asset",
+        name: "New Test Asset",
         type: "CHARACTER",
         metadata: { polyCount: 1000, format: "fbx", previewUrl: "http://example.com/preview.jpg" },
       });
 
     expect(res.status).toBe(201);
-    expect(res.body.name).toBe("Test Asset");
+    expect(res.body.name).toBe("New Test Asset");
     expect(res.body.studioId).toBe(studioId);
     expect(res.body.createdBy).toBe(userId);
   });
@@ -95,36 +112,16 @@ describe("Asset API", () => {
   });
 
   it("should get an asset by ID", async () => {
-    const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Specific Asset",
-        type: "ENVIRONMENT",
-      });
-
-    const assetId = createRes.body._id;
-
     const getRes = await request(app)
       .get(`/assets/${assetId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(getRes.status).toBe(200);
-    expect(getRes.body.name).toBe("Specific Asset");
+    expect(getRes.body.name).toBe("Asset for Test");
     expect(getRes.body._id).toBe(assetId);
   });
 
   it("should update an asset", async () => {
-    const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Asset to Update",
-        type: "CHARACTER",
-      });
-
-    const assetId = createRes.body._id;
-
     const updateRes = await request(app)
       .patch(`/assets/${assetId}`)
       .set("Authorization", `Bearer ${token}`)
@@ -138,16 +135,6 @@ describe("Asset API", () => {
   });
 
   it("should delete an asset", async () => {
-    const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Asset to Delete",
-        type: "PROP",
-      });
-
-    const assetId = createRes.body._id;
-
     const deleteRes = await request(app)
       .delete(`/assets/${assetId}`)
       .set("Authorization", `Bearer ${token}`);

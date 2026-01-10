@@ -62,7 +62,7 @@ This is where backend engineering truly begins.
 
 ## MENTAL MODEL (VERY IMPORTANT)
 
-Before code, let’s reframe how you should think.
+Before code, let’s reframe how you should should think.
 
 ### React State vs Database (Core Shift)
 
@@ -227,7 +227,52 @@ This work accomplishes:
 ✅ Studio ownership enforcement (multi-tenant safety)
 ✅ Input validation (HTTP boundary)
 ✅ Consistent REST contracts
-✅ API patterns that scale to **illions of assets**
+✅ API patterns that scale to **millions of assets**
+
+---
+
+🎬 **File Upload System (Senior Backend Mode)**
+
+> *“Large file handling vs frontend uploads”*
+
+This work addresses **production file handling**.
+
+Uploading a 2 MB avatar ❌
+Uploading a 5–20 GB animation asset ✅
+
+This phase designs the system **the way real animation studios do it**.
+
+---
+
+## MENTAL MODEL (RESET YOUR BRAIN)
+
+### Frontend vs Backend Responsibility (Critical)
+
+| Frontend     | Backend              |
+| ------------ | -------------------- |
+| Select file  | Validate & authorize |
+| Progress bar | Stream & persist     |
+| Retry UX     | Resume / recover     |
+| Chunking     | Integrity & storage  |
+| Preview      | Pipeline triggers    |
+
+> 🎯 The backend **never loads large files into memory**.
+> Experienced engineers treat memory as **radioactive**.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Streaming-based file uploads (no memory explosion)
+✅ Asset storage abstraction (local today, S3 later)
+✅ File metadata tracking in MongoDB
+✅ Secure studio-based asset isolation
+✅ Upload validation & limits
+✅ Pipeline hooks (thumbnail, preview later)
+
+This is **animation-grade backend engineering**.
 
 ---
 
@@ -251,6 +296,7 @@ These are the packages required for the application to run in production.
 | `winston`            | A versatile logging library for Node.js.                                    |
 | `prom-client`        | A Prometheus client for Node.js, enabling metric collection.                |
 | `express-validator`  | A middleware for Express.js that provides validation and sanitization features. |
+| `multer`             | A middleware for handling `multipart/form-data`, primarily for file uploads. |
 
 ### Development Dependencies (`devDependencies`)
 
@@ -269,6 +315,7 @@ These are the packages used only for development and testing, not for the produc
 | `@types/bcrypt`           | Provides TypeScript type definitions for the `bcrypt` library.            |
 | `@types/jsonwebtoken`     | Provides TypeScript type definitions for the `jsonwebtoken` library.      |
 | `@types/express-validator`| Provides TypeScript type definitions for the `express-validator` library. |
+| `@types/multer`           | Provides TypeScript type definitions for the `multer` library.            |
 
 ### Configuration and New Files
 
@@ -310,3 +357,17 @@ These files configure the behavior of the tools we use or are new files introduc
 | `/ready` endpoint (in `health.ts`)    | An endpoint indicating the application is ready to handle requests (beyond just being alive). |
 | `src/infra/http/validators/asset.validators.ts` | Defines validation rules for asset-related HTTP requests.                   |
 | `tests/asset.api.test.ts`             | Contains comprehensive API tests for asset CRUD operations, including pagination and ownership checks. |
+| `src/infra/storage/StorageProvider.ts`| Defines an interface for abstracting file storage operations.             |
+| `src/infra/storage/LocalStorageProvider.ts` | Provides a local filesystem implementation of the `StorageProvider` interface. |
+| `src/infra/http/upload.ts`            | Configures Multer for handling multipart file uploads, specifying destination and limits. |
+| `src/app/services/AssetUploadService.ts`| Handles the business logic for uploading assets, interacting with storage and asset repository. |
+| `src/app/controllers/AssetUploadController.ts` | Manages HTTP requests for asset uploads.                                  |
+| `src/infra/http/routes/asset-upload.routes.ts` | Defines the API routes for asset uploads.                                 |
+
+### Generating Secrets
+
+To generate a secure `JWT_SECRET` for your `.env` file, you can use the following command:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
