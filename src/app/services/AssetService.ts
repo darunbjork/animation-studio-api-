@@ -45,4 +45,22 @@ export class AssetService {
       throw new ValidationError("Asset not found");
     }
   }
+
+  static async rollbackAsset(
+    assetId: string,
+    studioId: string,
+    version: number
+  ) {
+    const asset = await AssetRepository.findOneByIdAndStudio(
+      assetId,
+      studioId
+    );
+
+    if (!asset) {
+      throw new ValidationError("Asset not found");
+    }
+
+    asset.currentVersion = version;
+    await asset.save();
+  }
 }

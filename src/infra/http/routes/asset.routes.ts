@@ -35,3 +35,4 @@ assetRouter.get("/", listAssetValidator, validate, AssetController.list);
 assetRouter.get("/:id", AssetController.get);
 assetRouter.patch("/:id", updateAssetValidator, validate, AssetController.update);
 assetRouter.delete("/:id", AssetController.delete);
+assetRouter.patch("/:id/rollback", AssetController.rollback);

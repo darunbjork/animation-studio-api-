@@ -13,6 +13,7 @@ import { requestLogger } from "./shared/middlewares/requestLogger";
 import { httpRequestCounter } from "./infra/metrics/metrics";
 import { metricsRouter } from "./infra/http/metrics";
 import { assetUploadRouter } from "./infra/http/routes/asset-upload.routes";
+import { assetVersionRouter } from "./infra/http/routes/asset-version.routes";
 
 export const app = express();
 
@@ -50,6 +51,7 @@ app.use("/health", healthRouter);
 app.use("/auth", authRouter);
 app.use("/assets", assetRouter);
 app.use("/assets", assetUploadRouter); // Mount asset upload router
+app.use("/assets", assetVersionRouter); // Mount asset version router
 app.use("/metrics", metricsRouter);
 
 // Global error handler (must be last) (will be uncommented once errorHandler is created)

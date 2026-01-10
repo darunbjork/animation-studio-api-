@@ -28,6 +28,10 @@ const AssetSchema = new Schema(
       size: Number,
       mimeType: String,
     },
+    currentVersion: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

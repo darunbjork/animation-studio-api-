@@ -62,4 +62,16 @@ export class AssetController {
 
     res.status(204).send();
   }
+
+  static async rollback(req: Request, res: Response) {
+    const { version } = req.body;
+    await AssetService.rollbackAsset(
+      req.params.id,
+      // @ts-ignore
+      req.user.studioId,
+      version
+    );
+
+    res.status(200).json({ message: `Asset rolled back to version ${version}` });
+  }
 }
