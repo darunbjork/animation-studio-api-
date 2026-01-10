@@ -505,11 +505,12 @@ This is **real studio-grade asset management**.
 
 🔗 FRONTEND CONNECTION
 
-The frontend integration for asset versioning involves:
-*   **Version Dropdown**: A UI element allowing users to select and view different versions of an asset (`GET /assets/:id/versions`).
-*   **Upload New File**: The interface for uploading a new file, which creates a new version (`POST /assets/:id/versions`).
-*   **Rollback Button**: A feature allowing users (with appropriate permissions) to revert an asset to a previous version (`PATCH /assets/:id/rollback`).
-*   **Change Notes**: The `changeNote` field provides context for each version, visible in the UI.
+| Frontend               | Backend                      |
+| :--------------------- | :--------------------------- |
+| Version dropdown       | `GET /assets/:id/versions`   |
+| Upload new file        | `POST /assets/:id/versions`  |
+| Rollback button        | `PATCH /assets/:id/rollback` |
+| Change notes           | `changeNote` field           |
 
 ---
 
