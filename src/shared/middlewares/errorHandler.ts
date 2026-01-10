@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { DomainError } from "../errors/DomainError";
 import { logger } from "../../infra/logging/logger";
 

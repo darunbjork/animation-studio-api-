@@ -57,3 +57,11 @@ The `should paginate assets` test in `tests/asset.api.test.ts` failed intermitte
 
 **Resolution:**
 The test was modified to use `Promise.all` when creating the batch of assets for pagination testing. This ensures that all asset creation requests are completed and their corresponding documents are saved to the database before the pagination query is executed, guaranteeing consistent and reliable test results.
+
+## 8. `supertest` Promise.all TypeScript Error
+
+**Failure:**
+The `should paginate assets` test in `tests/asset.api.test.ts` produced a TypeScript error: `Argument of type 'Test' is not assignable to parameter of type 'never'.` This occurred when passing an array of `supertest` `Test` objects (which are `PromiseLike`) to `Promise.all`, as TypeScript struggled to infer a consistent type for the promises in some contexts.
+
+**Resolution:**
+The `assetCreationPromises` array within the `should paginate assets` test was explicitly typed as `Promise<any>[]`. This provided TypeScript with the necessary type information, resolving the assignment error and allowing `Promise.all` to correctly process the `supertest` promises.
