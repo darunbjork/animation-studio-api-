@@ -4,9 +4,56 @@ This project is the backend API for a modern animation studio, built with a focu
 
 ---
 
+🎬 **Senior Backend Engineer Mode Activated**
+Welcome to **Foundation & Animation Studio Bridge**.
+We’re going to build this **exactly** like a senior engineer would—slow, explicit, and with reasoning behind *every* decision.
+
+You’re not just “setting up a server.”
+You’re laying the **structural foundation of a real animation studio backend** that could scale to **1000+ artists, millions of assets, and render farms**.
+
+---
+
+# FOUNDATION
+
+## “Why Animation Studios Need Backend Systems”
+
+Before code, we anchor *why this exists*.
+
+### 🎥 Why animation studios are backend-heavy
+
+Animation studios are **not CRUD apps**. They are:
+
+* Asset factories (huge files, versioning, dependencies)
+* Workflow engines (pipeline stages, approvals, renders)
+* Collaboration platforms (many artists, same assets)
+* Infrastructure systems (queues, background jobs, compute)
+
+Frontend (React) = **interaction layer**
+Backend = **source of truth + orchestration brain**
+
+> 💡 Think of the backend as the *production coordinator* of the studio.
+
+---
+
+# WHAT WE BUILD (SCOPE)
+
+This work accomplishes:
+
+✅ Production-grade Express + TypeScript backend
+✅ Enterprise folder structure (service / controller / repo)
+✅ Security middleware (helmet, rate limiting, env validation)
+✅ Health check endpoints (ops-ready)
+✅ Docker + docker-compose
+✅ Testing infrastructure (Jest + Supertest)
+✅ Git workflow (how seniors commit foundations)
+
+This is **Level 0 infrastructure** everything else depends on.
+
+---
+
 ## Tools and Dependencies
 
-Here is a brief overview of the tools and dependencies used in this project as of Day 1.
+Here is a brief overview of the tools and dependencies used in this project.
 
 ### Runtime Dependencies (`dependencies`)
 
@@ -18,8 +65,6 @@ These are the packages required for the application to run in production.
 | `dotenv`             | Loads environment variables from a `.env` file into `process.env`.          |
 | `helmet`             | Secures the Express app by setting various HTTP headers.                    |
 | `express-rate-limit` | Limits repeated requests to public APIs and/or endpoints to prevent abuse.  |
-
-<br>
 
 ### Development Dependencies (`devDependencies`)
 
@@ -36,9 +81,7 @@ These are the packages used only for development and testing, not for the produc
 | `@types/jest`    | Provides TypeScript type definitions for the Jest testing framework.            |
 | `supertest`      | A library for testing HTTP endpoints, used for integration tests.               |
 
-<br>
-
-## Configuration Files
+### Configuration Files
 
 These files configure the behavior of the tools we use.
 
@@ -53,16 +96,16 @@ These files configure the behavior of the tools we use.
 
 ---
 
-🎬 **— MongoDB + Authentication (Senior Backend Mode)**
+🎬 **MongoDB + Authentication (Senior Backend Mode)**
 
 > *“Database design vs React state for animation data”*
 
 You’re officially moving from **“server exists”** → **“system of record exists.”**
-Today is where backend engineering truly begins.
+This is where backend engineering truly begins.
 
 ---
 
-##  MENTAL MODEL (VERY IMPORTANT)
+## MENTAL MODEL (VERY IMPORTANT)
 
 Before code, let’s reframe how you should think.
 
@@ -83,7 +126,7 @@ Before code, let’s reframe how you should think.
 
 # GOALS
 
-By the end of today, you will have:
+This work accomplishes:
 
 ✅ MongoDB connected (production-safe pattern)
 ✅ Multi-tenant **Studio → Users** data model
@@ -128,3 +171,65 @@ This is **enterprise identity infrastructure**.
 | `src/infra/http/routes/auth.routes.ts` | Defines the API routes for authentication.                                |
 | `src/shared/middlewares/auth.ts`      | Middleware to authenticate requests using JWT.                            |
 | `tests/auth.test.ts`                 | Contains tests for the authentication flow.                               |
+
+---
+
+🎬 **Service Layer Architecture (Senior Backend Mode)**
+
+> *“Backend services vs React components for asset management”*
+
+This is where you **cross the senior threshold**.
+
+If the previous work was *foundation* and *identity*, this is **architecture discipline** — the thing that separates:
+
+> ❌ “It works”
+> ✅ “It scales, is testable, and survives teams”
+
+---
+
+## MENTAL MODEL (FROM FIRST PRINCIPLES)
+
+### React Analogy (use this to anchor everything)
+
+| React           | Backend                 |
+| --------------- | ----------------------- |
+| Component       | Controller              |
+| Custom Hook     | Service                 |
+| Context / Store | Domain Model            |
+| API client      | Repository              |
+| Side effects    | Infrastructure adapters |
+
+**Rule:**
+
+> Controllers should be as dumb as JSX.
+> Services are where *thinking happens*.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Clean **Controller → Service → Repository** flow
+✅ First **Asset domain** (core animation concept)
+✅ Validation boundaries (HTTP vs business rules)
+✅ Multi-tenant asset ownership enforcement
+✅ Testable business logic (without HTTP)
+✅ A pattern you’ll reuse for every future feature
+
+This is the **spine of the entire platform**.
+
+---
+
+## New Tools, Dependencies, and Configuration
+
+### New Files
+
+| File/Variable          | Description                                                                 |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `src/app/repositories/models/Asset.ts`  | Defines the Mongoose schema and model for an Asset.                       |
+| `src/app/repositories/AssetRepository.ts` | Abstracts the data access logic for Assets.                               |
+| `src/app/services/AssetService.ts`      | Contains the business logic for asset creation and retrieval.             |
+| `src/app/controllers/AssetController.ts`  | Handles HTTP requests related to assets.                                  |
+| `src/infra/http/routes/asset.routes.ts` | Defines the API routes for assets, protected by authentication.           |
+| `tests/asset.service.test.ts`         | Contains service-level tests for the asset business logic.                |
