@@ -12,6 +12,7 @@ import { correlationId } from "./shared/middlewares/correlationId";
 import { requestLogger } from "./shared/middlewares/requestLogger";
 import { httpRequestCounter } from "./infra/metrics/metrics";
 import { metricsRouter } from "./infra/http/metrics";
+import { assetUploadRouter } from "./infra/http/routes/asset-upload.routes";
 
 export const app = express();
 
@@ -48,6 +49,7 @@ app.use(json({ limit: "10mb" }));
 app.use("/health", healthRouter);
 app.use("/auth", authRouter);
 app.use("/assets", assetRouter);
+app.use("/assets", assetUploadRouter); // Mount asset upload router
 app.use("/metrics", metricsRouter);
 
 // Global error handler (must be last) (will be uncommented once errorHandler is created)

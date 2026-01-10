@@ -23,6 +23,11 @@ const AssetSchema = new Schema(
       format: String,
       previewUrl: String,
     },
+    file: {
+      path: String,
+      size: Number,
+      mimeType: String,
+    },
   },
   { timestamps: true }
 );
