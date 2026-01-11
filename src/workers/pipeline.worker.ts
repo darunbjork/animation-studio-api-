@@ -9,7 +9,7 @@ async function runWorker() {
   await connectDatabase();
   console.log("Pipeline worker connected to database.");
 
-  pipelineQueue.process(async (job) => {
+  pipelineQueue.process(2, async (job) => {
     const { assetId, version } = job.data;
     console.log(`Processing pipeline for asset ${assetId}, version ${version}`);
 

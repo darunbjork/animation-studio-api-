@@ -692,6 +692,82 @@ Frontend reacts to the state of the backend systems. Backend **guarantees** the 
 
 ---
 
+🎬 **Performance Optimization & Large-Scale File Handling (Senior Backend Mode)**
+
+> *“Large file handling, streaming, and database scaling”*
+
+This section focuses on making the system survive at scale. We're moving from a system that *works* to a system that is performant, stable, and resilient under the pressure of thousands of artists and multi-gigabyte files.
+
+---
+
+## MENTAL MODEL (CORE SHIFT)
+
+### Performance is Not Just Speed
+
+True performance for a backend system means:
+- **Predictable Latency:** Responds in a reliable time frame.
+- **Bounded Memory Usage:** Never runs out of memory (OOM).
+- **Graceful Degradation:** Handles high load without collapsing.
+- **Stable Throughput:** Maintains a consistent rate of processing.
+
+> 🎯 A system that is *slightly slower but never crashes* is infinitely better than a fast system that is unstable.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Zero-buffering, streaming file downloads with resume support (HTTP Range Requests).
+✅ A clear database indexing strategy for performance-critical models.
+✅ A pattern for Redis caching on hot data paths.
+✅ Backpressure handling in background workers via concurrency control.
+✅ A mental model for scaling to real studio size.
+
+This is **thinking in limits, pressure, and failure modes**.
+
+---
+
+### Implementation Details for Scalability
+
+#### Key Principles
+
+*   **Stream Everything:** Large files are never loaded into server memory. The new `AssetDownloadController` streams files directly from storage to the client, handling backpressure automatically. It also supports HTTP Range Requests, allowing clients to pause and resume downloads.
+*   **Indexes are Mandatory:** Queries on large collections without indexes will kill database performance. We've added indexes to the `studioId`, `createdAt`, `status`, and `version` fields on our core models (`Asset`, `AssetVersion`, `RenderJob`) to ensure queries are fast and efficient.
+*   **Cache Hot Data:** Not all data is worth caching. The new `AssetCacheService` implements a simple read-through cache for asset metadata, a "hot path" that is read frequently. This reduces load on the database. The cache has a short TTL (Time To Live) to ensure data doesn't become too stale.
+*   **Control Concurrency:** Uncontrolled background jobs can overwhelm a system. We've introduced a concurrency limit to our queue processors (`render.worker.ts` and `pipeline.worker.ts`) to ensure that only a fixed number of heavy tasks run at the same time on a single worker instance.
+
+#### Core Components
+
+| Component | Description |
+| :--- | :--- |
+| **`AssetDownloadController`** | (`controllers/AssetDownloadController.ts`) Streams a specific asset version to the client, with support for HTTP Range Requests. |
+| **Model Indexes** | (`models/*.ts`) Added `.index()` calls to Mongoose schemas for performance-critical query paths. |
+| **`AssetCacheService`** | (`services/AssetCacheService.ts`) A read-through cache using Redis to store and retrieve asset metadata, reducing DB load. |
+| **Worker Concurrency** | (`workers/*.ts`) The `.process()` method for Bull queues is now given a concurrency factor to limit parallel job execution. |
+
+
+#### Common Experienced Engineer Warnings
+
+*   ❌ Never load a large file into memory with `fs.readFile`. Always stream.
+*   ❌ Deploying to production without database indexes is a recipe for disaster.
+*   ❌ Over-caching is dangerous. Caching write-paths or authorization logic can lead to bugs and security holes.
+*   ❌ Running CPU-heavy tasks on the main API process will block the event loop and crash your service.
+*   ✅ Control worker concurrency to protect your system from load spikes.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+| Frontend Feature | Backend Technique      |
+| ---------------- | ---------------------- |
+| Resumable Download | Streaming + HTTP Range Requests |
+| Infinite Scroll / Pagination | Bounded, indexed DB queries |
+| Fast Asset Loading | Redis Caching        |
+| Stable UI under Load | Worker Isolation & Backpressure |
+
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.

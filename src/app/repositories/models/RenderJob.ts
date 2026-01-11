@@ -30,4 +30,6 @@ const RenderJobSchema = new Schema(
   { timestamps: true }
 );
 
+RenderJobSchema.index({ studioId: 1, status: 1 });
+
 export const RenderJobModel = model("RenderJob", RenderJobSchema);

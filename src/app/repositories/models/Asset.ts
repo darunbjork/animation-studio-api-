@@ -36,4 +36,6 @@ const AssetSchema = new Schema(
   { timestamps: true }
 );
 
+AssetSchema.index({ studioId: 1, createdAt: -1 });
+
 export const AssetModel = model("Asset", AssetSchema);

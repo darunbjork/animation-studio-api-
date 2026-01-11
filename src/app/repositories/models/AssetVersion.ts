@@ -29,6 +29,7 @@ const AssetVersionSchema = new Schema(
 );
 
 AssetVersionSchema.index({ assetId: 1, version: 1 }, { unique: true });
+AssetVersionSchema.index({ assetId: 1, version: -1 });
 
 export const AssetVersionModel = model(
   "AssetVersion",

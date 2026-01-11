@@ -7,7 +7,7 @@ async function runWorker() {
   await connectDatabase();
   console.log("Render worker connected to database.");
 
-  renderQueue.process(async (job) => {
+  renderQueue.process(2, async (job) => {
     console.log(`Processing render job ${job.id}`);
     const { renderJobId } = job.data;
 
