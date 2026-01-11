@@ -609,6 +609,87 @@ This is **staff-level backend engineering**.
 | Progress bar    | WebSocket events (`render:progress`) |
 | Status badge    | DB-backed state, updated via WebSocket events |
 | Retry button    | Could trigger another `POST /render` for a failed job |
+
+---
+
+🎬 **Asset Pipeline Automation (Senior Backend Mode)**
+
+> *“Automated workflows vs manual processes”*
+
+This connects everything you’ve built into a cohesive, automated **pipeline**. Instead of isolated features, we now have a production system that orchestrates asset processing from upload to render-ready.
+
+---
+
+## MENTAL MODEL (THIS IS KEY)
+
+### Manual vs. Automated Thinking
+
+| Junior / Manual       | Senior / Automated       |
+| --------------------- | ------------------------ |
+| Upload file           | Upload triggers pipeline |
+| Click "generate"      | Thumbnail auto-generated |
+| Start render manually | Render auto-enqueued     |
+| Check status          | Pipeline state machine   |
+| “Did we forget a step?” | System guarantees order  |
+
+> 🎯 A pipeline is a **deterministic sequence of steps**, not just a collection of endpoints.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ A pipeline state machine for each asset version
+✅ Background automation using a dedicated orchestration queue
+✅ Placeholders for FFmpeg (video) and Sharp (image) integration
+✅ Deterministic, observable, and retry-able workflow steps
+✅ Failure isolation (a pipeline step can fail without crashing the system)
+
+This is **senior → staff-level system design**.
+
+---
+
+### Implementation Details for Asset Pipeline
+
+#### Key Principles
+
+*   **Orchestration, not Execution:** A new `pipelineQueue` is introduced. Its only job is to manage the *sequence* of pipeline steps, not to perform heavy work itself.
+*   **Trigger on Upload:** The pipeline is automatically started by the `AssetVersionService` the moment a new version is successfully uploaded.
+*   **State Machine in the Database:** A new `AssetPipeline` model tracks the lifecycle of an asset version (`UPLOADED` → `VALIDATING` → `PROCESSING_PREVIEW` → etc.), providing a clear, auditable status.
+*   **Workers for Each Step:** The pipeline worker (`pipeline.worker.ts`) walks through the state machine. In a real system, it would dispatch jobs to other specialized workers (e.g., a thumbnail worker, a validation worker). For now, it simulates these steps and then enqueues the final render job.
+
+#### Core Components
+
+| Component | Description |
+| :--- | :--- |
+| **`AssetPipeline` Model** | (`models/AssetPipeline.ts`) Tracks pipeline `status` and `error` for each `assetId` and `version`. |
+| **Pipeline Queue** | (`infra/queue/pipeline.queue.ts`) A new Bull queue (`asset-pipeline`) dedicated to orchestration. |
+| **`AssetVersionService`** | (Updated) Now creates an `AssetPipeline` record and adds a job to the `pipelineQueue` on new version upload. |
+| **`pipeline.worker.ts`** | (`workers/pipeline.worker.ts`) The core orchestrator. It fetches the pipeline, updates its status through each step, and dispatches jobs to other queues (like the `renderQueue`). |
+
+#### Common Experienced Engineer Warnings
+
+*   ❌ Don't put pipeline orchestration logic in controllers.
+*   ❌ Don't run heavyweight processing (like FFmpeg) in an orchestration worker. The orchestrator dispatches; other workers execute.
+*   ❌ Avoid manual steps in a production workflow. If it can be automated, it should be.
+*   ✅ Use separate queues for different concerns (e.g., pipeline, rendering, transcoding).
+*   ✅ Make pipeline steps idempotent and retry-able.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+| Frontend UI      | Backend System         |
+| ---------------- | ---------------------- |
+| Upload progress  | File upload stream     |
+| "Processing..." badge | `pipeline:update` WebSocket event |
+| Preview thumbnail | Output of a future thumbnail worker |
+| "Ready to Render" status | `RENDER_QUEUED` pipeline state |
+| Error message    | `FAILED` pipeline state with error |
+
+Frontend reacts to the state of the backend systems. Backend **guarantees** the process.
+
 ---
 
 ## Tools and Dependencies
