@@ -51,6 +51,22 @@ This is **Level 0 infrastructure** everything else depends on.
 
 ---
 
+# Running the Project
+
+This section provides the commands needed to run, test, and build the application.
+
+| Command | Description | Environment |
+| :--- | :--- | :--- |
+| `docker-compose up -d` | Starts background services (e.g., Redis) in detached mode. | Development & Production |
+| `npm run dev` | Starts the API server with auto-reloading for development. | Development |
+| `npm run worker:render` | Starts the render worker with auto-reloading for development. | Development |
+| `npm test` | Runs the full automated test suite using Jest. | Development |
+| `npx tsc --noEmit` | Performs a static type-check of the entire codebase. | Development |
+| `npm run build` | Compiles TypeScript to production-ready JavaScript in the `dist` folder. | Production |
+| `npm run start` | Runs the compiled JavaScript application from the `dist` folder. | Production |
+
+---
+
 🎬 **MongoDB + Authentication (Senior Backend Mode)**
 
 > *“Database design vs React state for animation data”*
