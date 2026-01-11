@@ -768,6 +768,86 @@ This is **thinking in limits, pressure, and failure modes**.
 
 ---
 
+🎬 **Advanced Asset Relationships & Dependency Graphs (Senior Backend Mode)**
+
+> *“Dependency graphs, asset linking, and impact analysis”*
+
+Today, your system evolves from a "backend for assets" to a **production brain** that understands relationships. In animation, changing one asset can impact many others. This feature enables the system to understand and predict these impacts.
+
+---
+
+## MENTAL MODEL (CRITICAL)
+
+### From Lists → Graphs
+
+| Naive Thinking ❌       | Senior Thinking ✅         |
+| ---------------------- | ------------------------- |
+| Assets are independent | Assets form a graph       |
+| Flat CRUD              | Directed dependencies     |
+| “Update asset”         | “What does this affect?”  |
+| Manual tracking        | Automated impact analysis |
+
+> 🎯 You are building a **dependency graph engine**.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ An asset dependency model (DAG - Directed Acyclic Graph)
+✅ Parent → child relationships for assets
+✅ Algorithms for impact analysis and cycle detection
+✅ Safe change detection (preventing breaking changes unintentionally)
+✅ Foundation for re-render triggering logic based on dependencies
+
+This is **deep senior / staff-level architecture**.
+
+---
+
+### Implementation Details for Dependency Graphs
+
+#### Key Principles
+
+*   **Explicit, Version-Aware Dependencies:** Dependencies are modeled explicitly in a separate collection, not embedded in asset documents. This allows for graph queries, scalability, and flexibility. Each dependency links specific *versions* of assets, ensuring stability even when new versions of parent assets are released.
+*   **No Circular Dependencies:** A `DependencyService` is implemented to perform a Depth-First Search (DFS) check for cycles before a new dependency is created, preventing infinite loops and ensuring a valid DAG.
+*   **Impact Analysis:** The `ImpactAnalysisService` uses a recursive graph traversal to find all assets that would be affected by a change to a particular asset version, providing crucial insights for artists and producers.
+
+#### Core Components
+
+| Component | Description |
+| :--- | :--- |
+| **`AssetDependency` Model** | (`models/AssetDependency.ts`) Stores `parentAssetId`, `parentVersion`, `childAssetId`, `childVersion`, and `type` of relationship. |
+| **`AssetDependencyRepository`** | (`repositories/AssetDependencyRepository.ts`) Provides CRUD and lookup functions for `AssetDependency` records. |
+| **`DependencyService`** | (`services/DependencyService.ts`) Contains logic to detect circular dependencies before creation. |
+| **`AssetDependencyService`** | (`services/AssetDependencyService.ts`) Orchestrates the creation of dependencies, using `DependencyService` to validate. |
+| **`ImpactAnalysisService`** | (`services/ImpactAnalysisService.ts`) Implements recursive logic to find all downstream assets impacted by a change. |
+| **`AssetDependencyController`** | (`controllers/AssetDependencyController.ts`) Provides API endpoints for linking assets (`POST /assets/link`), retrieving parents/children, and performing impact analysis. |
+
+#### Common Experienced Engineer Warnings
+
+*   ❌ Storing dependencies as simple arrays within asset documents: This makes complex graph queries inefficient and hard to scale.
+*   ❌ Ignoring circular dependencies: Leads to infinite loops and broken logic.
+*   ❌ Version-agnostic dependencies: New parent versions might unintentionally break old child versions.
+*   ✅ Model dependencies as a separate graph (DAG).
+*   ✅ Enforce version-aware relationships.
+*   ✅ Implement algorithms for cycle detection and impact analysis.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+| Frontend Feature     | Backend Capability    |
+| -------------------- | --------------------- |
+| Dependency Graph UI  | `AssetDependency` model |
+| "What breaks?" Modal | Impact analysis       |
+| Change Warnings      | Cycle detection logic |
+| Auto Re-render Trigger | Graph traversal + pipeline integration |
+
+Frontend visualizes the graph. Backend **reasons** about the relationships.
+
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.
