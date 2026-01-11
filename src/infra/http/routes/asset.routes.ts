@@ -10,6 +10,7 @@ import {
 import { validationResult, ValidationError as ExpressValidationError } from "express-validator"; // Reverted import
 import { ValidationError } from "../../../shared/errors/ValidationError";
 import { Request, Response, NextFunction } from "express";
+import { RenderController } from "../../../app/controllers/RenderController";
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -36,3 +37,4 @@ assetRouter.get("/:id", AssetController.get);
 assetRouter.patch("/:id", updateAssetValidator, validate, AssetController.update);
 assetRouter.delete("/:id", AssetController.delete);
 assetRouter.patch("/:id/rollback", AssetController.rollback);
+assetRouter.post("/:id/render", RenderController.start);

@@ -1,9 +1,12 @@
 import { Server } from "socket.io";
+import http from "http";
 import jwt from "jsonwebtoken";
 import { env } from "../../config/env";
 
-export function setupSocket(server: any) {
-  const io = new Server(server, {
+let io: Server;
+
+export function setupSocket(server: http.Server) {
+  io = new Server(server, {
     cors: {
       origin: "*",
     },
@@ -67,3 +70,5 @@ export function setupSocket(server: any) {
 
   return io;
 }
+
+export { io };

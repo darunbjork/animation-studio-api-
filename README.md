@@ -514,6 +514,87 @@ This is **real studio-grade asset management**.
 
 ---
 
+🎬 **Render Queue System (Senior Backend Mode)**
+
+> *“Background processing vs React async patterns”*
+
+This work is a **huge leap** into distributed, asynchronous systems.
+HTTP requests should never be blocked by heavy work like rendering. We solve this by building a **job queue**—the core of a render farm.
+
+---
+
+## MENTAL MODEL (CRITICAL SHIFT)
+
+### React Async vs Backend Async
+
+| React           | Backend           |
+| --------------- | ----------------- |
+| `useEffect`     | Background worker |
+| Promise         | Job               |
+| Loading spinner | Job state machine |
+| Retry button    | Automatic retry   |
+| UI thread       | Worker process    |
+
+> 🎯 **Never block HTTP**. Render jobs must live *outside* the request lifecycle.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ Bull-based render job queue
+✅ Redis-backed background workers
+✅ Render job domain model
+✅ Job lifecycle (queued → processing → completed/failed)
+✅ Progress tracking & real-time updates
+✅ Automatic retries & failure handling
+
+This is **staff-level backend engineering**.
+
+---
+
+### Implementation Details for Render Queue System
+
+#### Key Principles
+
+*   **API is a dispatcher:** The API's only job is to accept a render request and enqueue it. It responds immediately with `202 Accepted`.
+*   **Worker does the work:** A separate, isolated worker process picks up jobs from the queue, preventing any impact on API performance.
+*   **Database is the source of truth:** A `RenderJob` model tracks the status, progress, and history of every job, providing an auditable record.
+*   **Real-time feedback:** The worker emits progress events over WebSockets, giving the user a live view of the render.
+
+#### Core Components
+
+| Component | Description |
+| :--- | :--- |
+| **Queue Dependencies** | `bull` for job management; `ioredis` for Redis connection. |
+| **`RenderJob` Model** | (`models/RenderJob.ts`) Mongoose schema for `studioId`, `assetId`, `status`, `progress`, `error`. |
+| **Render Queue** | (`infra/queue/render.queue.ts`) Bull queue (`render-jobs`) connected to Redis via `env.REDIS_URL`. |
+| **`RenderService`** | (`services/RenderService.ts`) Creates `RenderJob` in DB, adds job to queue with retry logic. |
+| **`render.worker.ts`** | (`workers/render.worker.ts`) Processes jobs, updates DB, emits `render:progress` socket events. |
+| **`RenderController`** | (`controllers/RenderController.ts`) API endpoint to call `RenderService` and start the process. |
+
+#### Common Experienced Engineer Warnings
+
+*   ❌ Never do heavy work in controllers.
+*   ❌ Don't block the event loop.
+*   ❌ Don't rely on Redis as the only source of truth.
+*   ✅ Use background workers for async tasks.
+*   ✅ Design for failure with retries and backoff.
+*   ✅ Provide real-time UI updates for long-running jobs.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+| Frontend        | Backend          |
+| --------------- | ---------------- |
+| “Render” button | `POST /assets/:id/render` (returns `202 Accepted`) |
+| Progress bar    | WebSocket events (`render:progress`) |
+| Status badge    | DB-backed state, updated via WebSocket events |
+| Retry button    | Could trigger another `POST /render` for a failed job |
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.
