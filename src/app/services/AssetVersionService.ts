@@ -2,6 +2,8 @@ import { AssetRepository } from "../repositories/AssetRepository";
 import { AssetVersionRepository } from "../repositories/AssetVersionRepository";
 import { LocalStorageProvider } from "../../infra/storage/LocalStorageProvider";
 import { ValidationError } from "../../shared/errors/ValidationError";
+import { pipelineQueue } from "../../infra/queue/pipeline.queue";
+import { AssetPipelineModel } from "../repositories/models/AssetPipeline";
 
 const storage = new LocalStorageProvider();
 
@@ -26,9 +28,7 @@ export class AssetVersionService {
       throw new ValidationError("Asset not found");
     }
 
-    const latest = await AssetVersionRepository.getLatestVersion(
-      asset.id
-    );
+    const latest = await AssetVersionRepository.getLatestVersion(asset.id);
 
     const nextVersion = latest ? latest.version + 1 : 1;
 
@@ -51,6 +51,17 @@ export class AssetVersionService {
 
     asset.currentVersion = nextVersion;
     await asset.save();
+
+    // Trigger the asset pipeline
+    await AssetPipelineModel.create({
+      assetId: asset.id,
+      version: nextVersion,
+    });
+
+    await pipelineQueue.add({
+      assetId: asset.id,
+      version: nextVersion,
+    });
 
     return version;
   }
