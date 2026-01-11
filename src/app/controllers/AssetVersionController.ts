@@ -13,6 +13,8 @@ export class AssetVersionController {
       // @ts-ignore
       file: req.file!,
       changeNote: req.body.changeNote,
+      // @ts-ignore
+      userRole: req.user.role,
     });
 
     res.status(201).json(version);

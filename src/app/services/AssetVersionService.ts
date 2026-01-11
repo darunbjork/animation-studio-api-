@@ -2,6 +2,8 @@ import { AssetRepository } from "../repositories/AssetRepository";
 import { AssetVersionRepository } from "../repositories/AssetVersionRepository";
 import { LocalStorageProvider } from "../../infra/storage/LocalStorageProvider";
 import { ValidationError } from "../../shared/errors/ValidationError";
+import { AuthorizationError } from "../../shared/errors/AuthorizationError";
+import { PermissionService } from "./PermissionService";
 import { pipelineQueue } from "../../infra/queue/pipeline.queue";
 import { AssetPipelineModel } from "../repositories/models/AssetPipeline";
 
@@ -14,7 +16,12 @@ export class AssetVersionService {
     userId: string;
     file: Express.Multer.File;
     changeNote?: string;
+    userRole: string; // Add userRole parameter
   }) {
+    if (!PermissionService.canUpload(params.userRole as any)) {
+      throw new AuthorizationError("You do not have permission to upload new asset versions.");
+    }
+
     if (!params.file) {
       throw new ValidationError("File is required");
     }

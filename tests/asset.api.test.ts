@@ -23,12 +23,17 @@ describe("Asset API", () => {
       studioId,
       email: "api.test@example.com",
       password: "password123",
-      role: "ARTIST",
+      role: "PRODUCER", // Changed role to PRODUCER
     });
     userId = user._id.toString();
 
     token = jwt.sign(
-      { userId: user.id, role: user.role, studioId: user.studioId },
+      {
+        userId: user.id,
+        role: user.role,
+        studioId: user.studioId,
+        scopes: ["assets:read", "assets:write", "assets:delete", "assets:approve"], // Added scopes
+      },
       env.JWT_SECRET,
       { expiresIn: "1h" }
     );

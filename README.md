@@ -848,6 +848,90 @@ Frontend visualizes the graph. Backend **reasons** about the relationships.
 
 ---
 
+🎬 **Security Hardening & Threat Modeling (Senior Backend Mode)**
+
+> *“Asset protection, licensing, and studio-grade security”*
+
+Today, we shift our mindset from assuming *good intent* to **assuming compromise**. Security is not a feature; it’s a **system property** that must be built in from the ground up, ensuring the system *fails safely*.
+
+---
+
+## MENTAL MODEL (CRITICAL SHIFT)
+
+### Authentication ≠ Authorization ≠ Security
+
+| Concept        | Meaning                            |
+| -------------- | ---------------------------------- |
+| Authentication | Who are you?                       |
+| Authorization  | What can you do?                   |
+| Security       | What happens when things go wrong? |
+
+> 🎯 A secure system is one that **fails safely**.
+
+---
+
+# GOALS
+
+This work accomplishes:
+
+✅ A comprehensive threat model for an animation studio environment.
+✅ Implementation of Role-Based Access Control (RBAC) augmented with resource-based checks.
+✅ Secure file access patterns that prevent unauthorized direct downloads.
+✅ Fine-grained access control using Token Scopes and the principle of least privilege.
+✅ A defense-in-depth mindset for building resilient security layers.
+
+This is **senior → staff-level responsibility**.
+
+---
+
+### Implementation Details for Security Hardening
+
+#### Key Principles
+
+*   **Threat Modeling First:** We identify valuable assets, likely attackers, and potential attack vectors to proactively design defenses. This informs every security decision.
+*   **Centralized Authorization Logic:** Permission checks are consolidated in a `PermissionService`, preventing scattered logic and ensuring consistent policy enforcement across the application. Controllers ask for permissions; services decide.
+*   **Service-Level Enforcement:** Authorization checks are performed at the service layer, not just at the API route, preventing bypasses and making the system more robust.
+*   **Studio Isolation (Multi-Tenancy):** Every data access query related to assets or workflows is implicitly or explicitly filtered by `studioId`, safeguarding data privacy across different studios.
+*   **Secure Streaming Downloads:** Asset file downloads are always mediated by the API, which performs permission checks before streaming content. There are no publicly accessible file URLs.
+*   **Scoped JWTs:** JSON Web Tokens now include `scopes` in their payload. These scopes represent specific granular permissions (e.g., `assets:delete`).
+*   **`requireScope` Middleware:** A new middleware dynamically checks if a user's token possesses the required scopes for a given API endpoint, enforcing the principle of least privilege.
+
+#### Core Components
+
+| Component | Description |
+| :--- | :--- |
+| **`PermissionService`** | (`services/PermissionService.ts`) Centralizes authorization rules (e.g., `canDelete`, `canUpload`). |
+| **Service Checks** | Integration of `PermissionService` into `AssetService`, `AssetUploadService`, `AssetVersionService`. |
+| **JWT Scopes** | (`services/AuthService.ts` updated) JWT payload includes `scopes` for granular permissions. |
+| **`requireScope` Middleware** | (`shared/middlewares/requireScope.ts`) Enforces token scopes on API routes, ensuring least privilege. |
+| **`ForbiddenError`** | (`shared/errors/ForbiddenError.ts`) A custom error class for permission-denied scenarios. |
+
+
+#### Common Senior Security Mistakes
+
+*   ❌ Relying solely on frontend checks for authorization.
+*   ❌ Exposing direct public URLs to sensitive asset files.
+   *   ❌ Using only roles for authorization without resource-specific or granular checks.
+*   ❌ Granting overly broad permissions to tokens (not following least privilege).
+*   ✅ Implement defense-in-depth: multiple layers of security.
+*   ✅ Ensure multi-tenancy is enforced at every data access point.
+*   ✅ Always validate user permissions in the backend business logic.
+
+---
+
+🔗 FRONTEND CONNECTION
+
+| Frontend Concept   | Backend Enforcement   |
+| ------------------ | --------------------- |
+| Protected UI routes | Auth middleware       |
+| Disabled UI actions | Permission checks     |
+| Session expiration | Token rotation logic  |
+| Download buttons   | Secure streaming API  |
+
+Frontend **reflects** security policies. Backend **enforces** them robustly.
+
+---
+
 ## Tools and Dependencies
 
 Here is a brief overview of all tools and dependencies used in this project.

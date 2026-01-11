@@ -57,7 +57,9 @@ export class AssetController {
     await AssetService.deleteAsset(
       req.params.id,
       // @ts-ignore
-      req.user.studioId
+      req.user.studioId,
+      // @ts-ignore
+      req.user.role
     );
 
     res.status(204).send();

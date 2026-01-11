@@ -1,5 +1,7 @@
 import { AssetRepository } from "../repositories/AssetRepository";
 import { ValidationError } from "../../shared/errors/ValidationError";
+import { AuthorizationError } from "../../shared/errors/AuthorizationError";
+import { PermissionService } from "./PermissionService";
 
 export class AssetService {
   static async createAsset(data: any) {
@@ -38,7 +40,11 @@ export class AssetService {
     return asset;
   }
 
-  static async deleteAsset(assetId: string, studioId: string) {
+  static async deleteAsset(assetId: string, studioId: string, userRole: string) {
+    if (!PermissionService.canDelete(userRole as any)) { // Cast to Role for now, will fix with proper type later
+      throw new AuthorizationError("You do not have permission to delete assets.");
+    }
+
     const asset = await AssetRepository.delete(assetId, studioId);
 
     if (!asset) {

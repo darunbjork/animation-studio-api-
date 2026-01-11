@@ -11,6 +11,8 @@ export class AssetUploadController {
       assetId: req.params.id,
       // @ts-ignore
       file: req.file!,
+      // @ts-ignore
+      userRole: req.user.role,
     });
 
     res.json(asset);

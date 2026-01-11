@@ -28,7 +28,12 @@ export class AuthService {
     if (!match) throw new AppError("Invalid credentials", 401);
 
     const token = jwt.sign(
-      { userId: user.id, role: user.role, studioId: user.studioId },
+      {
+        userId: user.id,
+        role: user.role,
+        studioId: user.studioId,
+        scopes: ["assets:read", "assets:write", "assets:delete", "assets:approve"], // Example scopes
+      },
       env.JWT_SECRET,
       { expiresIn: "15m" }
     );

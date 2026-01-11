@@ -12,6 +12,7 @@ import { ValidationError } from "../../../shared/errors/ValidationError";
 import { Request, Response, NextFunction } from "express";
 import { RenderController } from "../../../app/controllers/RenderController";
 import { AssetDownloadController } from "../../../app/controllers/AssetDownloadController";
+import { requireScope } from "../../../shared/middlewares/requireScope";
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -36,7 +37,7 @@ assetRouter.post("/", createAssetValidator, validate, AssetController.create);
 assetRouter.get("/", listAssetValidator, validate, AssetController.list);
 assetRouter.get("/:id", AssetController.get);
 assetRouter.patch("/:id", updateAssetValidator, validate, AssetController.update);
-assetRouter.delete("/:id", AssetController.delete);
+assetRouter.delete("/:id", requireScope("assets:delete"), AssetController.delete);
 assetRouter.patch("/:id/rollback", AssetController.rollback);
 assetRouter.post("/:id/render", RenderController.start);
 assetRouter.get("/:id/versions/:version/download", AssetDownloadController.download);
