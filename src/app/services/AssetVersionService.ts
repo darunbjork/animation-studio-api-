@@ -6,6 +6,8 @@ import { AuthorizationError } from "../../shared/errors/AuthorizationError";
 import { PermissionService } from "./PermissionService";
 import { pipelineQueue } from "../../infra/queue/pipeline.queue";
 import { AssetPipelineModel } from "../repositories/models/AssetPipeline";
+import { AssetCacheService } from "./AssetCacheService"; // Import AssetCacheService
+import { AssetListService } from "./AssetListService"; // Import AssetListService
 
 const storage = new LocalStorageProvider();
 
@@ -58,6 +60,10 @@ export class AssetVersionService {
 
     asset.currentVersion = nextVersion;
     await asset.save();
+
+    // Invalidate specific asset cache and asset list cache after new version upload
+    await AssetCacheService.invalidateAssetCache(params.assetId, params.studioId);
+    await AssetListService.invalidateListCache(params.studioId);
 
     // Trigger the asset pipeline
     await AssetPipelineModel.create({

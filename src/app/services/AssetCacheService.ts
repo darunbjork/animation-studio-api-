@@ -21,4 +21,9 @@ export class AssetCacheService {
 
     return asset;
   }
+
+  static async invalidateAssetCache(assetId: string, studioId: string) {
+    const key = `asset:${studioId}:${assetId}`;
+    await redis.del(key);
+  }
 }

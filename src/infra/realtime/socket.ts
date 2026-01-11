@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import { env } from "../../config/env";
+import { AssetCacheService } from "../../app/services/AssetCacheService"; // Import AssetCacheService
 
 let io: Server;
 
@@ -35,7 +36,7 @@ export function setupSocket(server: http.Server) {
 
     console.log(`🎬 User ${userId} connected to studio ${studioId}`);
 
-    socket.on("asset:comment", (payload) => {
+    socket.on("asset:comment", async (payload) => {
       // @ts-ignore
       const { studioId, userId } = socket.data.user;
 
@@ -47,9 +48,12 @@ export function setupSocket(server: http.Server) {
       };
 
       socket.to(`studio:${studioId}`).emit("asset:commented", event);
+
+      // Invalidate asset cache when commented
+      await AssetCacheService.invalidateAssetCache(payload.assetId, studioId);
     });
 
-    socket.on("asset:approve", (payload) => {
+    socket.on("asset:approve", async (payload) => {
       // @ts-ignore
       const { studioId, role } = socket.data.user;
 
@@ -61,6 +65,9 @@ export function setupSocket(server: http.Server) {
         assetId: payload.assetId,
         approvedAt: new Date().toISOString(),
       });
+
+      // Invalidate asset cache when approved
+      await AssetCacheService.invalidateAssetCache(payload.assetId, studioId);
     });
 
     socket.on("disconnect", () => {

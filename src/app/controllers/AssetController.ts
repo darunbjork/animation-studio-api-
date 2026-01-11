@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AssetService } from "../services/AssetService";
+import { AssetListService } from "../services/AssetListService";
 
 export class AssetController {
   static async create(req: Request, res: Response) {
@@ -18,18 +19,14 @@ export class AssetController {
     const page = Number(req.query.page || 1);
     const limit = Number(req.query.limit || 20);
 
-    const assets = await AssetService.listAssets(
+    const result = await AssetListService.listAssets(
       // @ts-ignore
       req.user.studioId,
       page,
       limit
     );
 
-    res.json({
-      page,
-      limit,
-      data: assets,
-    });
+    res.json(result);
   }
 
   static async get(req: Request, res: Response) {

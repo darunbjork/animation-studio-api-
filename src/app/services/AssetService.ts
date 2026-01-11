@@ -2,6 +2,8 @@ import { AssetRepository } from "../repositories/AssetRepository";
 import { ValidationError } from "../../shared/errors/ValidationError";
 import { AuthorizationError } from "../../shared/errors/AuthorizationError";
 import { PermissionService } from "./PermissionService";
+import { AssetListService } from "./AssetListService";
+import { AssetCacheService } from "./AssetCacheService"; // Import AssetCacheService
 
 export class AssetService {
   static async createAsset(data: any) {
@@ -9,7 +11,12 @@ export class AssetService {
       throw new ValidationError("Asset name is required");
     }
 
-    return AssetRepository.create(data);
+    const asset = await AssetRepository.create(data);
+
+    // Invalidate asset list cache after creation
+    await AssetListService.invalidateListCache(asset.studioId.toString());
+
+    return asset;
   }
 
   static async listAssets(studioId: string, page = 1, limit = 20) {
@@ -37,6 +44,10 @@ export class AssetService {
       throw new ValidationError("Asset not found");
     }
 
+    // Invalidate specific asset cache and asset list cache after update
+    await AssetCacheService.invalidateAssetCache(assetId, studioId);
+    await AssetListService.invalidateListCache(studioId);
+
     return asset;
   }
 
@@ -50,6 +61,10 @@ export class AssetService {
     if (!asset) {
       throw new ValidationError("Asset not found");
     }
+
+    // Invalidate specific asset cache and asset list cache after deletion
+    await AssetCacheService.invalidateAssetCache(assetId, studioId);
+    await AssetListService.invalidateListCache(studioId);
   }
 
   static async rollbackAsset(
