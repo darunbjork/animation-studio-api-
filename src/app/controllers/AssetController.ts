@@ -9,8 +9,8 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.createAsset({
       ...req.body,
-      studioId: req.user.studioId,
-      createdBy: req.user.userId,
+      studioId: req.user!.studioId, // Add non-null assertion
+      createdBy: req.user!.userId, // Add non-null assertion
     }, correlationId);
 
     logger.info("Asset created", {
@@ -30,7 +30,7 @@ export class AssetController {
     const limit = Number(req.query.limit || 20);
 
     const result = await AssetListService.listAssets(
-      req.user.studioId,
+      req.user!.studioId, // Add non-null assertion
       page,
       limit
     );
@@ -51,7 +51,7 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.getAsset(
       req.params.id,
-      req.user.studioId,
+      req.user!.studioId, // Add non-null assertion
       correlationId
     );
 
@@ -69,7 +69,7 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.updateAsset(
       req.params.id,
-      req.user.studioId,
+      req.user!.studioId, // Add non-null assertion
       req.body,
       correlationId
     );
@@ -89,8 +89,8 @@ export class AssetController {
     const correlationId = req.correlationId;
     await AssetService.deleteAsset(
       req.params.id,
-      req.user.studioId,
-      req.user.role,
+      req.user!.studioId, // Add non-null assertion
+      req.user!.role,     // Add non-null assertion
       correlationId
     );
 
@@ -109,7 +109,7 @@ export class AssetController {
     const { version } = req.body;
     await AssetService.rollbackAsset(
       req.params.id,
-      req.user.studioId,
+      req.user!.studioId, // Add non-null assertion
       version,
       correlationId
     );
