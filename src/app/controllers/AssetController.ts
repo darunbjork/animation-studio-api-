@@ -13,7 +13,7 @@ export class AssetController {
       studioId: req.user.studioId,
       // @ts-ignore
       createdBy: req.user.userId,
-    });
+    }, correlationId);
 
     logger.info("Asset created", {
       correlationId,
@@ -55,7 +55,8 @@ export class AssetController {
     const asset = await AssetService.getAsset(
       req.params.id,
       // @ts-ignore
-      req.user.studioId
+      req.user.studioId,
+      correlationId
     );
 
     logger.info("Asset retrieved", {
@@ -74,7 +75,8 @@ export class AssetController {
       req.params.id,
       // @ts-ignore
       req.user.studioId,
-      req.body
+      req.body,
+      correlationId
     );
 
     logger.info("Asset updated", {
@@ -95,7 +97,8 @@ export class AssetController {
       // @ts-ignore
       req.user.studioId,
       // @ts-ignore
-      req.user.role
+      req.user.role,
+      correlationId
     );
 
     logger.info("Asset deleted", {
@@ -115,7 +118,8 @@ export class AssetController {
       req.params.id,
       // @ts-ignore
       req.user.studioId,
-      version
+      version,
+      correlationId
     );
 
     logger.info("Asset rollback initiated", {
