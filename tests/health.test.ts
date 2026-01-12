@@ -1,3 +1,5 @@
+jest.unmock('../src/infra/queue/redis'); // Unmock Redis for this specific test file
+
 import request from "supertest";
 import { app } from "../src/app";
 import mongoose from "mongoose"; // Import mongoose
