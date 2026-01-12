@@ -108,6 +108,7 @@ describe("Asset API", () => {
             metadata: { polyCount: 100 + i, format: `fbx-${i}`, previewUrl: `http://example.com/page_preview_${i}.jpg` }, // Add some metadata
           })
           .then((createRes) => {
+            console.log(`Asset creation status for pagination test: ${createRes.status}`);
             expect(createRes.status).toBe(201);
             expect(createRes.body._id).toBeDefined();
             expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
