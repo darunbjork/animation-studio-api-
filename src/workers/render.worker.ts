@@ -1,24 +1,26 @@
 import { renderQueue } from "../infra/queue/render.queue";
 import { RenderJobModel } from "../app/repositories/models/RenderJob";
 import { connectDatabase } from "../infra/database/mongoose";
+import { logger } from "../infra/logging/logger"; // Import logger
 
 async function runWorker() {
   await connectDatabase();
-  console.log("Render worker connected to database.");
+  logger.info("Render worker connected to database.");
 
   // Start the worker to process jobs
   renderQueue.process(2, async (job) => {
-    console.log(`Processing render job ${job.id}`);
-    const { renderJobId } = job.data;
+    const { renderJobId, correlationId } = job.data;
+    logger.info(`Processing render job`, { correlationId, jobId: job.id, renderJobId });
 
     const renderJob = await RenderJobModel.findById(renderJobId);
     if (!renderJob) {
-      console.error(`Render job ${renderJobId} not found in database.`);
+      logger.error(`Render job not found in database.`, { correlationId, renderJobId, jobId: job.id });
       return;
     }
 
     renderJob.status = "PROCESSING";
     await renderJob.save();
+    logger.info("Render job status updated to PROCESSING", { correlationId, renderJobId });
 
     // Simulate render steps
     for (let i = 1; i <= 10; i++) {
@@ -27,42 +29,39 @@ async function runWorker() {
       job.progress(progress);
       renderJob.progress = progress;
       await renderJob.save();
-
-      // Emit progress (removed direct io emission)
+      logger.info(`Render job progress update`, { correlationId, renderJobId, progress });
     }
 
     renderJob.status = "COMPLETED";
     renderJob.progress = 100;
     await renderJob.save();
-    console.log(`Render job ${job.id} completed.`);
-
-    // Emit completion (removed direct io emission)
+    logger.info(`Render job completed.`, { correlationId, renderJobId, jobId: job.id });
   });
 
   renderQueue.on("failed", async (job, err) => {
-    console.error(`Render job ${job.id} failed:`, err.message);
-    const { renderJobId } = job.data;
+    const { renderJobId, correlationId } = job.data;
+    logger.error(`Render job failed:`, { correlationId, jobId: job.id, renderJobId, error: err.message });
+    
     const renderJob = await RenderJobModel.findById(renderJobId);
-    if (!renderJob) return;
+    if (!renderJob) {
+        logger.error(`Render job not found on failed event.`, { correlationId, renderJobId, jobId: job.id });
+        return;
+    }
 
     renderJob.status = "FAILED";
     renderJob.error = err.message;
     await renderJob.save();
-
-    // Emit failure (removed direct io emission)
+    logger.info("Render job status updated to FAILED", { correlationId, renderJobId });
   });
 
-  console.log("🚀 Render worker is listening for jobs...");
+  logger.info("🚀 Render worker is listening for jobs...");
 
   // Graceful shutdown
   const gracefulShutdown = async () => {
-    console.log("🛑 Render worker graceful shutdown started");
+    logger.info("🛑 Render worker graceful shutdown started");
     await renderQueue.close(); // Close the BullMQ queue
-    console.log("BullMQ render queue closed.");
-    // Mongoose connection is automatically managed by its internal connection pool.
-    // Explicit close is usually not needed unless process.exit() is called immediately.
-    // For workers, allowing existing tasks to complete is key.
-    console.log("Finished processing active render jobs. Exiting.");
+    logger.info("BullMQ render queue closed.");
+    logger.info("Finished processing active render jobs. Exiting.");
     process.exit(0);
   };
 
@@ -71,6 +70,6 @@ async function runWorker() {
 }
 
 runWorker().catch((err) => {
-  console.error("Worker failed to start:", err);
+  logger.error("Render worker failed to start:", { error: err.message, stack: err.stack });
   process.exit(1);
 });
