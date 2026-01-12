@@ -13,6 +13,8 @@ describe("Asset API", () => {
   let userId: string;
 
   beforeAll(async () => {
+    console.log("Asset API Test: MONGO_URI:", process.env.MONGO_URI);
+    console.log("Asset API Test: REDIS_URL:", process.env.REDIS_URL);
     await mongoose.connect(process.env.MONGO_URI || "");
 
     const studio = await StudioModel.create({ name: "Test Studio" });

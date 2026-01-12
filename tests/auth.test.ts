@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 
 describe("Auth Flow", () => {
   beforeAll(async () => {
+    console.log("Auth Flow Test: MONGO_URI:", process.env.MONGO_URI);
+    console.log("Auth Flow Test: REDIS_URL:", process.env.REDIS_URL);
     await mongoose.connect(process.env.MONGO_URI || "");
   });
 
