@@ -137,7 +137,7 @@ describe("Asset API", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Asset to Get",
-        type: "VEHICLE",
+        type: "PROP", // Changed from VEHICLE to PROP
         metadata: { polyCount: 1500, format: "usd", previewUrl: "http://example.com/get_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
@@ -161,7 +161,7 @@ describe("Asset API", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Asset to Update",
-        type: "VEHICLE",
+        type: "PROP", // Changed from VEHICLE to PROP
         metadata: { polyCount: 2000, format: "gltf", previewUrl: "http://example.com/update_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
@@ -188,7 +188,7 @@ describe("Asset API", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Asset to Delete",
-        type: "VEHICLE",
+        type: "PROP", // Changed from VEHICLE to PROP
         metadata: { polyCount: 50, format: "abc", previewUrl: "http://example.com/delete_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
