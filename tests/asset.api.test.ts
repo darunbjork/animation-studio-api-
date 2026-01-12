@@ -11,7 +11,6 @@ describe("Asset API", () => {
   let token: string;
   let studioId: string;
   let userId: string;
-  let assetId: string;
 
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URI || "");
@@ -39,21 +38,6 @@ describe("Asset API", () => {
     );
   });
 
-  beforeEach(async () => {
-    // Clean up assets before each test
-    await AssetModel.deleteMany({});
-    // Create a new asset for each test to ensure isolation
-    const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Asset for Test",
-        type: "CHARACTER",
-        metadata: { polyCount: 1000, format: "fbx", previewUrl: "http://example.com/preview.jpg" },
-      });
-    assetId = createRes.body._id;
-  });
-
   afterAll(async () => {
     if (mongoose.connection.db) {
       await mongoose.connection.db.dropDatabase();
@@ -78,6 +62,15 @@ describe("Asset API", () => {
   });
 
   it("should list assets", async () => {
+    // Create an asset for this test
+    await request(app)
+      .post("/assets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Listable Asset",
+        type: "PROP",
+      });
+
     const res = await request(app)
       .get("/assets")
       .set("Authorization", `Bearer ${token}`);
@@ -90,9 +83,13 @@ describe("Asset API", () => {
   });
 
   it("should paginate assets", async () => {
-    // Create more assets to test pagination
+    // Ensure a clean slate for this specific test
+    await AssetModel.deleteMany({});
+
+    // Create enough assets to thoroughly test pagination
+    const numberOfAssetsToCreate = 25;
     const assetCreationPromises: Promise<any>[] = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < numberOfAssetsToCreate; i++) {
       assetCreationPromises.push(
         request(app)
           .post("/assets")
@@ -105,30 +102,54 @@ describe("Asset API", () => {
     }
     await Promise.all(assetCreationPromises);
 
+    // Verify total assets created (optional, but good for debugging)
+    const totalAssets = await AssetModel.countDocuments({});
+    expect(totalAssets).toBe(numberOfAssetsToCreate);
+
     const res = await request(app)
       .get("/assets?page=2&limit=10")
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
-    expect(res.body.data.length).toBe(10);
+    expect(res.body.data.length).toBe(10); // Expect 10 assets for page 2, limit 10
     expect(res.body.page).toBe(2);
     expect(res.body.limit).toBe(10);
   });
 
   it("should get an asset by ID", async () => {
+    // Create an asset for this test
+    const createRes = await request(app)
+      .post("/assets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Asset to Get",
+        type: "VEHICLE",
+      });
+    const assetIdToGet = createRes.body._id;
+
     const getRes = await request(app)
-      .get(`/assets/${assetId}`)
+      .get(`/assets/${assetIdToGet}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(getRes.status).toBe(200);
-    expect(getRes.body.name).toBe("Asset for Test");
-    expect(getRes.body._id).toBe(assetId);
+    expect(getRes.body.name).toBe("Asset to Get");
+    expect(getRes.body._id).toBe(assetIdToGet);
   });
 
   it("should update an asset", async () => {
+    // Create an asset for this test
+    const createRes = await request(app)
+      .post("/assets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Asset to Update",
+        type: "VEHICLE",
+      });
+    const assetIdToUpdate = createRes.body._id;
+
     const updateRes = await request(app)
-      .patch(`/assets/${assetId}`)
+      .patch(`/assets/${assetIdToUpdate}`)
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Updated Asset Name",
@@ -136,18 +157,28 @@ describe("Asset API", () => {
 
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.name).toBe("Updated Asset Name");
-    expect(updateRes.body._id).toBe(assetId);
+    expect(updateRes.body._id).toBe(assetIdToUpdate);
   });
 
   it("should delete an asset", async () => {
+    // Create an asset for this test
+    const createRes = await request(app)
+      .post("/assets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Asset to Delete",
+        type: "VEHICLE",
+      });
+    const assetIdToDelete = createRes.body._id;
+
     const deleteRes = await request(app)
-      .delete(`/assets/${assetId}`)
+      .delete(`/assets/${assetIdToDelete}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(deleteRes.status).toBe(204);
 
     const getRes = await request(app)
-      .get(`/assets/${assetId}`)
+      .get(`/assets/${assetIdToDelete}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(getRes.status).toBe(400); // Asset not found
