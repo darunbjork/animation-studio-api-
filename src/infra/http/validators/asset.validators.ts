@@ -4,6 +4,10 @@ import { body, param, query } from "express-validator";
 export const createAssetValidator = [
   body("name").isString().notEmpty(),
   body("type").isIn(["CHARACTER", "PROP", "ENVIRONMENT"]),
+  body("metadata").optional().isObject(),
+  body("metadata.polyCount").optional().isNumeric(),
+  body("metadata.format").optional().isString(),
+  body("metadata.previewUrl").optional().isURL(),
 ];
 
 export const updateAssetValidator = [
