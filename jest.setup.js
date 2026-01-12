@@ -1,8 +1,8 @@
 // jest.setup.js
 
 // Set environment variables for tests to connect to Dockerized services
-process.env.MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27018/animation_studio';
-process.env.REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+process.env.MONGO_URI = 'mongodb://localhost:27018/animation_studio';
+process.env.REDIS_URL = 'redis://localhost:6379';
 
 
 // Mock the ioredis module
