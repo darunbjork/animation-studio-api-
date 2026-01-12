@@ -9,9 +9,7 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.createAsset({
       ...req.body,
-      // @ts-ignore
       studioId: req.user.studioId,
-      // @ts-ignore
       createdBy: req.user.userId,
     }, correlationId);
 
@@ -32,7 +30,6 @@ export class AssetController {
     const limit = Number(req.query.limit || 20);
 
     const result = await AssetListService.listAssets(
-      // @ts-ignore
       req.user.studioId,
       page,
       limit
@@ -54,7 +51,6 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.getAsset(
       req.params.id,
-      // @ts-ignore
       req.user.studioId,
       correlationId
     );
@@ -73,7 +69,6 @@ export class AssetController {
     const correlationId = req.correlationId;
     const asset = await AssetService.updateAsset(
       req.params.id,
-      // @ts-ignore
       req.user.studioId,
       req.body,
       correlationId
@@ -94,9 +89,7 @@ export class AssetController {
     const correlationId = req.correlationId;
     await AssetService.deleteAsset(
       req.params.id,
-      // @ts-ignore
       req.user.studioId,
-      // @ts-ignore
       req.user.role,
       correlationId
     );
@@ -116,7 +109,6 @@ export class AssetController {
     const { version } = req.body;
     await AssetService.rollbackAsset(
       req.params.id,
-      // @ts-ignore
       req.user.studioId,
       version,
       correlationId
