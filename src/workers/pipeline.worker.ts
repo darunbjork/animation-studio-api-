@@ -3,7 +3,6 @@ import { AssetPipelineModel } from "../app/repositories/models/AssetPipeline";
 import { RenderService } from "../app/services/RenderService";
 import { connectDatabase } from "../infra/database/mongoose";
 import { AssetModel } from "../app/repositories/models/Asset";
-import { connectDatabase } from "../infra/database/mongoose";
 
 async function runWorker() {
   await connectDatabase();
