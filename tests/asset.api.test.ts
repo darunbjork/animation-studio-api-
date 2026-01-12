@@ -59,17 +59,23 @@ describe("Asset API", () => {
     expect(res.body.name).toBe("New Test Asset");
     expect(res.body.studioId).toBe(studioId);
     expect(res.body.createdBy).toBe(userId);
+    expect(res.body._id).toBeDefined();
+    expect(res.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
   });
 
   it("should list assets", async () => {
     // Create an asset for this test
-    await request(app)
+    const createRes = await request(app)
       .post("/assets")
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Listable Asset",
         type: "PROP",
+        metadata: { polyCount: 500, format: "obj" },
       });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body._id).toBeDefined();
+    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
 
     const res = await request(app)
       .get("/assets")
@@ -97,6 +103,13 @@ describe("Asset API", () => {
           .send({
             name: `Paginated Asset ${i}`,
             type: "PROP",
+            metadata: { count: i, format: "fbx" }, // Add some metadata
+          })
+          .then((createRes) => {
+            expect(createRes.status).toBe(201);
+            expect(createRes.body._id).toBeDefined();
+            expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
+            return createRes;
           })
       );
     }
@@ -125,7 +138,11 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Get",
         type: "VEHICLE",
+        metadata: { wheels: 4, color: "blue" },
       });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body._id).toBeDefined();
+    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToGet = createRes.body._id;
 
     const getRes = await request(app)
@@ -145,7 +162,11 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Update",
         type: "VEHICLE",
+        metadata: { engine: "V8", doors: 2 },
       });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body._id).toBeDefined();
+    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToUpdate = createRes.body._id;
 
     const updateRes = await request(app)
@@ -168,7 +189,11 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Delete",
         type: "VEHICLE",
+        metadata: { destruction: "high", debris: "much" },
       });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body._id).toBeDefined();
+    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToDelete = createRes.body._id;
 
     const deleteRes = await request(app)
