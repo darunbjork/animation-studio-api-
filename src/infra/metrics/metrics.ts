@@ -2,9 +2,9 @@ import client from "prom-client";
 
 client.collectDefaultMetrics();
 
-export const httpRequestCounter = new client.Counter({
-  name: "http_requests_total",
-  help: "Total HTTP requests",
+export const httpRequestDuration = new client.Histogram({
+  name: "http_request_duration_seconds",
+  help: "HTTP request latency",
   labelNames: ["method", "route", "status"],
 });
 
