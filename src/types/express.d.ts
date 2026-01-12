@@ -6,7 +6,7 @@ declare namespace Express {
     user?: {
       userId: string;
       studioId: string;
-      role: string;
+      role: "ARTIST" | "DIRECTOR" | "PRODUCER"; // More precise role type
       scopes: string[];
     };
     correlationId?: string;
