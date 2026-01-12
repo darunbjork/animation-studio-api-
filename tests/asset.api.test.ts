@@ -71,7 +71,7 @@ describe("Asset API", () => {
       .send({
         name: "Listable Asset",
         type: "PROP",
-        metadata: { polyCount: 500, format: "obj" },
+        metadata: { polyCount: 500, format: "obj", previewUrl: "http://example.com/list_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -103,7 +103,7 @@ describe("Asset API", () => {
           .send({
             name: `Paginated Asset ${i}`,
             type: "PROP",
-            metadata: { count: i, format: "fbx" }, // Add some metadata
+            metadata: { polyCount: 100 + i, format: `fbx-${i}`, previewUrl: `http://example.com/page_preview_${i}.jpg` }, // Add some metadata
           })
           .then((createRes) => {
             expect(createRes.status).toBe(201);
@@ -138,7 +138,7 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Get",
         type: "VEHICLE",
-        metadata: { wheels: 4, color: "blue" },
+        metadata: { polyCount: 1500, format: "usd", previewUrl: "http://example.com/get_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -162,7 +162,7 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Update",
         type: "VEHICLE",
-        metadata: { engine: "V8", doors: 2 },
+        metadata: { polyCount: 2000, format: "gltf", previewUrl: "http://example.com/update_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -189,7 +189,7 @@ describe("Asset API", () => {
       .send({
         name: "Asset to Delete",
         type: "VEHICLE",
-        metadata: { destruction: "high", debris: "much" },
+        metadata: { polyCount: 50, format: "abc", previewUrl: "http://example.com/delete_preview.jpg" },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
