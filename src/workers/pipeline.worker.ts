@@ -3,7 +3,7 @@ import { AssetPipelineModel } from "../app/repositories/models/AssetPipeline";
 import { RenderService } from "../app/services/RenderService";
 import { connectDatabase } from "../infra/database/mongoose";
 import { AssetModel } from "../app/repositories/models/Asset";
-import { io } from "../infra/realtime/socket";
+import { connectDatabase } from "../infra/database/mongoose";
 
 async function runWorker() {
   await connectDatabase();
@@ -35,14 +35,7 @@ async function runWorker() {
     }
 
     const emitUpdate = () => {
-      if (io) {
-        io.to(`studio:${studioId}`).emit("pipeline:update", {
-          assetId,
-          version,
-          status: pipeline.status,
-          error: pipeline.error,
-        });
-      }
+      // Removed direct io emission
     };
 
     try {
@@ -91,6 +84,20 @@ async function runWorker() {
   });
 
   console.log("🚀 Pipeline worker is listening for jobs...");
+
+  // Graceful shutdown
+  const gracefulShutdown = async () => {
+    console.log("🛑 Pipeline worker graceful shutdown started");
+    await pipelineQueue.close(); // Close the BullMQ queue
+    console.log("BullMQ pipeline queue closed.");
+    // Mongoose connection is automatically managed by its internal connection pool.
+    // For workers, allowing existing tasks to complete is key.
+    console.log("Finished processing active pipeline jobs. Exiting.");
+    process.exit(0);
+  };
+
+  process.on("SIGTERM", gracefulShutdown);
+  process.on("SIGINT", gracefulShutdown);
 }
 
 runWorker().catch((err) => {
