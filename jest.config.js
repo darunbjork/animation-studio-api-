@@ -5,4 +5,5 @@ module.exports = {
   clearMocks: true,
   setupFiles: ['./jest.env.js'],
   setupFilesAfterEnv: ['./jest.setup.js'],
+  testTimeout: 30000,
 };

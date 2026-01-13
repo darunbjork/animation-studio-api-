@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
     steps:
       - uses: actions/checkout@v4
 

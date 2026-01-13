@@ -7,6 +7,8 @@ import { redis } from '../src/infra/queue/redis'; // Import the actual redis ins
 
 describe('Health Check', () => {
   beforeAll(async () => {
+    if (!process.env.MONGO_URI) throw new Error('MONGO_URI not set');
+    if (!process.env.REDIS_URL) throw new Error('REDIS_URL not set');
     // Make beforeAll async
     console.log('Health Check: MONGO_URI:', process.env.MONGO_URI);
     console.log('Health Check: REDIS_URL:', process.env.REDIS_URL);
