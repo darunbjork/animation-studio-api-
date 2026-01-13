@@ -28,5 +28,14 @@ jest.mock("./src/infra/queue/redis", () => {
   return { redis: mockRedis };
 });
 
+// Mock the bull module
+jest.mock("bull", () => {
+  return jest.fn().mockImplementation(() => ({
+    add: jest.fn(),
+    process: jest.fn(),
+    on: jest.fn(),
+  }));
+});
+
 // Mock AssetCacheService if it's causing issues.
 // For now, let's focus on redis directly.
