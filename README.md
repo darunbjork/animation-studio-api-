@@ -55,6 +55,34 @@ This is **Level 0 infrastructure** everything else depends on.
 
 This section provides the commands needed to run, test, and build the application.
 
+### Environment Configuration (`.env`)
+
+The application's behavior, especially how it connects to services like MongoDB and Redis, is controlled by environment variables loaded from the `.env` file. The correct configuration depends on whether you are running the application directly on your machine or as part of a Docker Compose setup.
+
+**Local Development (`npm run dev`)**
+
+When running the API server directly (e.g., `npm run dev`), the `REDIS_URL` in your `.env` file should point to `localhost`. This assumes you have Redis running locally or via Docker Compose with its port exposed to `localhost`.
+
+```
+REDIS_URL=redis://localhost:6379
+MONGO_URI=mongodb://localhost:27018/animation_studio
+```
+
+*Note: Ensure your MongoDB (port 27018) and Redis (port 6379) services are accessible on `localhost` when using this configuration.*
+
+**Docker Compose (`docker-compose up -d`)**
+
+When running the application using `docker-compose up -d`, the services communicate within a Docker network. In this scenario, `REDIS_URL` and `MONGO_URI` in your `.env` file should use the service names defined in `docker-compose.yml`.
+
+```
+REDIS_URL=redis://redis:6379
+MONGO_URI=mongodb://mongo:27017/animation_studio
+```
+
+*Note: The `api` service inside Docker will resolve `redis` and `mongo` to the respective containers within the Docker network.*
+
+---
+
 | Command | Description | Environment |
 | :--- | :--- | :--- |
 | `docker-compose up -d` | Starts background services (e.g., Redis) in detached mode. | Development & Production |
