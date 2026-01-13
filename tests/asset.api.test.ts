@@ -128,9 +128,9 @@ describe('Asset API', () => {
       expect(createRes.status).toBe(201);
       expect(createRes.body._id).toBeDefined();
       expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
-      await new Promise(resolve => setTimeout(resolve, 50)); // Small delay
+      await new Promise((resolve) => setTimeout(resolve, 50)); // Small delay
     }
-    await new Promise(resolve => setTimeout(resolve, 200)); // Delay after loop
+    await new Promise((resolve) => setTimeout(resolve, 200)); // Delay after loop
 
     // Verify total assets created (optional, but good for debugging)
     const totalAssets = await AssetModel.countDocuments({});
