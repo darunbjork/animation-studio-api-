@@ -36,8 +36,8 @@ The following packages were added to `devDependencies` in `package.json`:
 
 Two configuration files were created in the project root:
 
-*   **`.eslintrc.js`**: For ESLint configuration, extending `plugin:@typescript-eslint/recommended` and `plugin:prettier/recommended`.
-*   **`.prettierrc.js`**: For Prettier configuration, defining rules for code formatting.
+- **`.eslintrc.js`**: For ESLint configuration, extending `plugin:@typescript-eslint/recommended` and `plugin:prettier/recommended`.
+- **`.prettierrc.js`**: For Prettier configuration, defining rules for code formatting.
 
 ## 2. Linting Error Resolution
 
@@ -64,9 +64,9 @@ rules: {
 
 The remaining `no-unused-vars` warnings were fixed as follows:
 
-*   **`src/app/controllers/AssetDownloadController.ts`**: Removed the unused `path` import.
-*   **`src/app/repositories/models/User.ts`**: Renamed the unused `next` parameter to `_next` in the pre-save hook.
-*   **`src/app/services/PermissionService.ts`**: Renamed the unused `role` parameter to `_role` in the `canUpload` method.
+- **`src/app/controllers/AssetDownloadController.ts`**: Removed the unused `path` import.
+- **`src/app/repositories/models/User.ts`**: Renamed the unused `next` parameter to `_next` in the pre-save hook.
+- **`src/app/services/PermissionService.ts`**: Renamed the unused `role` parameter to `_role` in the `canUpload` method.
 
 After these fixes, `npm run lint` passes without any errors (only warnings that do not fail the CI).
 
@@ -78,30 +78,32 @@ The `npm run format` command passed without any issues, indicating that the code
 
 Here are the commands that are now part of the CI/CD pipeline and can be used locally:
 
-*   **`npm ci`**: Cleanly installs dependencies from `package-lock.json`.
-*   **`npm run lint`**: Runs ESLint to check for code quality issues.
-*   **`npm run format`**: Runs Prettier to check for formatting consistency.
-*   **`npm test`**: Runs the test suite.
-*   **`npm run build`**: Compiles the TypeScript code (similar to `npx tsc --noEmit`).
+- **`npm ci`**: Cleanly installs dependencies from `package-lock.json`.
+- **`npm run lint`**: Runs ESLint to check for code quality issues.
+- **`npm run format`**: Runs Prettier to check for formatting consistency.
+- **`npm test`**: Runs the test suite.
+- **`npm run build`**: Compiles the TypeScript code (similar to `npx tsc --noEmit`).
 
 ### Automatic Fixing
 
 As suggested by Copilot, you can use the following commands to automatically fix many linting and formatting errors:
 
-*   **Fix ESLint errors automatically:**
-    ```bash
-    npx eslint . --fix
-    ```
+- **Fix ESLint errors automatically:**
 
-*   **Fix Prettier formatting errors automatically:**
-    ```bash
-    npx prettier . --write
-    ```
+  ```bash
+  npx eslint . --fix
+  ```
 
-*   **Fix both Prettier and ESLint errors:**
-    ```bash
-    npx prettier . --write && npx eslint . --fix
-    ```
+- **Fix Prettier formatting errors automatically:**
+
+  ```bash
+  npx prettier . --write
+  ```
+
+- **Fix both Prettier and ESLint errors:**
+  ```bash
+  npx prettier . --write && npx eslint . --fix
+  ```
 
 ## 4. Final State
 
