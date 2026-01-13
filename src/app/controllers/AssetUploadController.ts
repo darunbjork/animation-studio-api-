@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { AssetUploadService } from "../services/AssetUploadService";
+import { Request, Response } from 'express';
+import { AssetUploadService } from '../services/AssetUploadService';
 
 export class AssetUploadController {
   static async upload(req: Request, res: Response) {

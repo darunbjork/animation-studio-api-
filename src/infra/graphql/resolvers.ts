@@ -1,14 +1,14 @@
-import { AssetRepository } from "../../app/repositories/AssetRepository";
-import { AssetVersionRepository } from "../../app/repositories/AssetVersionRepository";
-import { AssetPipelineModel } from "../../app/repositories/models/AssetPipeline";
-import { AssetDependencyRepository } from "../../app/repositories/AssetDependencyRepository";
+import { AssetRepository } from '../../app/repositories/AssetRepository';
+import { AssetVersionRepository } from '../../app/repositories/AssetVersionRepository';
+import { AssetPipelineModel } from '../../app/repositories/models/AssetPipeline';
+import { AssetDependencyRepository } from '../../app/repositories/AssetDependencyRepository';
 
 export const resolvers = {
   Query: {
     assets: async (_: any, __: any, ctx: any) => {
       // Assuming ctx.user will be populated by auth middleware and has studioId
       if (!ctx.user || !ctx.user.studioId) {
-        throw new Error("Unauthorized: User or studio ID not found in context");
+        throw new Error('Unauthorized: User or studio ID not found in context');
       }
       // findByStudio expects an options object, providing empty for now
       return AssetRepository.findByStudio(ctx.user.studioId, {});
@@ -16,12 +16,9 @@ export const resolvers = {
 
     asset: async (_: any, args: any, ctx: any) => {
       if (!ctx.user || !ctx.user.studioId) {
-        throw new Error("Unauthorized: User or studio ID not found in context");
+        throw new Error('Unauthorized: User or studio ID not found in context');
       }
-      return AssetRepository.findOneByIdAndStudio(
-        args.id,
-        ctx.user.studioId
-      );
+      return AssetRepository.findOneByIdAndStudio(args.id, ctx.user.studioId);
     },
   },
 

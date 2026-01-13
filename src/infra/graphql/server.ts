@@ -1,7 +1,7 @@
-import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@as-integrations/express5";
-import { typeDefs } from "./typeDefs";
-import { resolvers } from "./resolvers";
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@as-integrations/express5';
+import { typeDefs } from './typeDefs';
+import { resolvers } from './resolvers';
 
 export function createGraphQLServer(app: any) {
   const server = new ApolloServer({
@@ -11,7 +11,7 @@ export function createGraphQLServer(app: any) {
 
   server.start().then(() => {
     app.use(
-      "/graphql",
+      '/graphql',
       expressMiddleware(server, {
         context: async ({ req }) => ({ user: req.user }),
       })

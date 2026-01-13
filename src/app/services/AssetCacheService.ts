@@ -1,5 +1,5 @@
-import { redis } from "../../infra/queue/redis";
-import { AssetRepository } from "../repositories/AssetRepository";
+import { redis } from '../../infra/queue/redis';
+import { AssetRepository } from '../repositories/AssetRepository';
 
 export class AssetCacheService {
   static async getAsset(assetId: string, studioId: string) {
@@ -10,13 +10,10 @@ export class AssetCacheService {
       return JSON.parse(cached);
     }
 
-    const asset = await AssetRepository.findOneByIdAndStudio(
-      assetId,
-      studioId
-    );
+    const asset = await AssetRepository.findOneByIdAndStudio(assetId, studioId);
 
     if (asset) {
-      await redis.set(key, JSON.stringify(asset), "EX", 60); // Cache for 60 seconds
+      await redis.set(key, JSON.stringify(asset), 'EX', 60); // Cache for 60 seconds
     }
 
     return asset;

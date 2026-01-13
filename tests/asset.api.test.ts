@@ -1,30 +1,30 @@
-import request from "supertest";
-import { app } from "../src/app";
-import mongoose from "mongoose";
-import { StudioModel } from "../src/app/repositories/models/Studio";
-import { UserModel } from "../src/app/repositories/models/User";
-import jwt from "jsonwebtoken";
-import { env } from "../src/config/env";
-import { AssetModel } from "../src/app/repositories/models/Asset";
+import request from 'supertest';
+import { app } from '../src/app';
+import mongoose from 'mongoose';
+import { StudioModel } from '../src/app/repositories/models/Studio';
+import { UserModel } from '../src/app/repositories/models/User';
+import jwt from 'jsonwebtoken';
+import { env } from '../src/config/env';
+import { AssetModel } from '../src/app/repositories/models/Asset';
 
-describe("Asset API", () => {
+describe('Asset API', () => {
   let token: string;
   let studioId: string;
   let userId: string;
 
   beforeAll(async () => {
-    console.log("Asset API Test: MONGO_URI:", process.env.MONGO_URI);
-    console.log("Asset API Test: REDIS_URL:", process.env.REDIS_URL);
-    await mongoose.connect(process.env.MONGO_URI || "");
+    console.log('Asset API Test: MONGO_URI:', process.env.MONGO_URI);
+    console.log('Asset API Test: REDIS_URL:', process.env.REDIS_URL);
+    await mongoose.connect(process.env.MONGO_URI || '');
 
-    const studio = await StudioModel.create({ name: "Test Studio" });
+    const studio = await StudioModel.create({ name: 'Test Studio' });
     studioId = studio._id.toString();
 
     const user = await UserModel.create({
       studioId,
-      email: "api.test@example.com",
-      password: "password123",
-      role: "PRODUCER", // Changed role to PRODUCER
+      email: 'api.test@example.com',
+      password: 'password123',
+      role: 'PRODUCER', // Changed role to PRODUCER
     });
     userId = user._id.toString();
 
@@ -33,10 +33,15 @@ describe("Asset API", () => {
         userId: user.id,
         role: user.role,
         studioId: user.studioId,
-        scopes: ["assets:read", "assets:write", "assets:delete", "assets:approve"], // Added scopes
+        scopes: [
+          'assets:read',
+          'assets:write',
+          'assets:delete',
+          'assets:approve',
+        ], // Added scopes
       },
       env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: '1h' }
     );
   });
 
@@ -47,41 +52,49 @@ describe("Asset API", () => {
     await mongoose.connection.close();
   });
 
-  it("should create an asset", async () => {
+  it('should create an asset', async () => {
     const res = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/assets')
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "New Test Asset",
-        type: "CHARACTER",
-        metadata: { polyCount: 1000, format: "fbx", previewUrl: "http://example.com/preview.jpg" },
+        name: 'New Test Asset',
+        type: 'CHARACTER',
+        metadata: {
+          polyCount: 1000,
+          format: 'fbx',
+          previewUrl: 'http://example.com/preview.jpg',
+        },
       });
 
     expect(res.status).toBe(201);
-    expect(res.body.name).toBe("New Test Asset");
+    expect(res.body.name).toBe('New Test Asset');
     expect(res.body.studioId).toBe(studioId);
     expect(res.body.createdBy).toBe(userId);
     expect(res.body._id).toBeDefined();
     expect(res.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
   });
 
-  it("should list assets", async () => {
+  it('should list assets', async () => {
     // Create an asset for this test
     const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/assets')
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "Listable Asset",
-        type: "PROP",
-        metadata: { polyCount: 500, format: "obj", previewUrl: "http://example.com/list_preview.jpg" },
+        name: 'Listable Asset',
+        type: 'PROP',
+        metadata: {
+          polyCount: 500,
+          format: 'obj',
+          previewUrl: 'http://example.com/list_preview.jpg',
+        },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
     expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
 
     const res = await request(app)
-      .get("/assets")
-      .set("Authorization", `Bearer ${token}`);
+      .get('/assets')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
@@ -90,41 +103,40 @@ describe("Asset API", () => {
     expect(res.body.limit).toBe(20);
   });
 
-  it("should paginate assets", async () => {
+  it('should paginate assets', async () => {
     // Ensure a clean slate for this specific test
     await AssetModel.deleteMany({});
 
     // Create enough assets to thoroughly test pagination
     const numberOfAssetsToCreate = 25;
-    const assetCreationPromises: Promise<any>[] = [];
     for (let i = 0; i < numberOfAssetsToCreate; i++) {
-      assetCreationPromises.push(
-        request(app)
-          .post("/assets")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            name: `Paginated Asset ${i}`,
-            type: "PROP",
-            metadata: { polyCount: 100 + i, format: `fbx-${i}`, previewUrl: `http://example.com/page_preview_${i}.jpg` }, // Add some metadata
-          })
-          .then((createRes) => {
-            console.log(`Asset creation status for pagination test: ${createRes.status}`);
-            expect(createRes.status).toBe(201);
-            expect(createRes.body._id).toBeDefined();
-            expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
-            return createRes;
-          })
+      const createRes = await request(app)
+        .post('/assets')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: `Paginated Asset ${i}`,
+          type: 'PROP',
+          metadata: {
+            polyCount: 100 + i,
+            format: `fbx-${i}`,
+            previewUrl: `http://example.com/page_preview_${i}.jpg`,
+          }, // Add some metadata
+        });
+      console.log(
+        `Asset creation status for pagination test: ${createRes.status}`
       );
+      expect(createRes.status).toBe(201);
+      expect(createRes.body._id).toBeDefined();
+      expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     }
-    await Promise.all(assetCreationPromises);
 
     // Verify total assets created (optional, but good for debugging)
     const totalAssets = await AssetModel.countDocuments({});
     expect(totalAssets).toBe(numberOfAssetsToCreate);
 
     const res = await request(app)
-      .get("/assets?page=2&limit=10")
-      .set("Authorization", `Bearer ${token}`);
+      .get('/assets?page=2&limit=10')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
@@ -133,15 +145,19 @@ describe("Asset API", () => {
     expect(res.body.limit).toBe(10);
   });
 
-  it("should get an asset by ID", async () => {
+  it('should get an asset by ID', async () => {
     // Create an asset for this test
     const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/assets')
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "Asset to Get",
-        type: "PROP", // Changed from VEHICLE to PROP
-        metadata: { polyCount: 1500, format: "usd", previewUrl: "http://example.com/get_preview.jpg" },
+        name: 'Asset to Get',
+        type: 'PROP', // Changed from VEHICLE to PROP
+        metadata: {
+          polyCount: 1500,
+          format: 'usd',
+          previewUrl: 'http://example.com/get_preview.jpg',
+        },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -150,22 +166,26 @@ describe("Asset API", () => {
 
     const getRes = await request(app)
       .get(`/assets/${assetIdToGet}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(getRes.status).toBe(200);
-    expect(getRes.body.name).toBe("Asset to Get");
+    expect(getRes.body.name).toBe('Asset to Get');
     expect(getRes.body._id).toBe(assetIdToGet);
   });
 
-  it("should update an asset", async () => {
+  it('should update an asset', async () => {
     // Create an asset for this test
     const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/assets')
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "Asset to Update",
-        type: "PROP", // Changed from VEHICLE to PROP
-        metadata: { polyCount: 2000, format: "gltf", previewUrl: "http://example.com/update_preview.jpg" },
+        name: 'Asset to Update',
+        type: 'PROP', // Changed from VEHICLE to PROP
+        metadata: {
+          polyCount: 2000,
+          format: 'gltf',
+          previewUrl: 'http://example.com/update_preview.jpg',
+        },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -174,25 +194,29 @@ describe("Asset API", () => {
 
     const updateRes = await request(app)
       .patch(`/assets/${assetIdToUpdate}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "Updated Asset Name",
+        name: 'Updated Asset Name',
       });
 
     expect(updateRes.status).toBe(200);
-    expect(updateRes.body.name).toBe("Updated Asset Name");
+    expect(updateRes.body.name).toBe('Updated Asset Name');
     expect(updateRes.body._id).toBe(assetIdToUpdate);
   });
 
-  it("should delete an asset", async () => {
+  it('should delete an asset', async () => {
     // Create an asset for this test
     const createRes = await request(app)
-      .post("/assets")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/assets')
+      .set('Authorization', `Bearer ${token}`)
       .send({
-        name: "Asset to Delete",
-        type: "PROP", // Changed from VEHICLE to PROP
-        metadata: { polyCount: 50, format: "abc", previewUrl: "http://example.com/delete_preview.jpg" },
+        name: 'Asset to Delete',
+        type: 'PROP', // Changed from VEHICLE to PROP
+        metadata: {
+          polyCount: 50,
+          format: 'abc',
+          previewUrl: 'http://example.com/delete_preview.jpg',
+        },
       });
     expect(createRes.status).toBe(201);
     expect(createRes.body._id).toBeDefined();
@@ -201,13 +225,13 @@ describe("Asset API", () => {
 
     const deleteRes = await request(app)
       .delete(`/assets/${assetIdToDelete}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(deleteRes.status).toBe(204);
 
     const getRes = await request(app)
       .get(`/assets/${assetIdToDelete}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(getRes.status).toBe(400); // Asset not found
   });

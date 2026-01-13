@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { AssetDependencyService } from "../services/AssetDependencyService";
-import { AssetDependencyRepository } from "../repositories/AssetDependencyRepository";
-import { ImpactAnalysisService } from "../services/ImpactAnalysisService";
+import { Request, Response } from 'express';
+import { AssetDependencyService } from '../services/AssetDependencyService';
+import { AssetDependencyRepository } from '../repositories/AssetDependencyRepository';
+import { ImpactAnalysisService } from '../services/ImpactAnalysisService';
 
 export class AssetDependencyController {
   static async link(req: Request, res: Response) {
@@ -20,10 +20,10 @@ export class AssetDependencyController {
       });
       res.status(201).json(dependency);
     } catch (error: any) {
-      if (error.name === "ValidationError") {
+      if (error.name === 'ValidationError') {
         return res.status(400).json({ error: error.message });
       }
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 

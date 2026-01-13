@@ -1,5 +1,5 @@
-import { redis } from "../../infra/queue/redis";
-import { AssetRepository } from "../repositories/AssetRepository";
+import { redis } from '../../infra/queue/redis';
+import { AssetRepository } from '../repositories/AssetRepository';
 
 export class AssetListService {
   static async listAssets(studioId: string, page = 1, limit = 20) {
@@ -10,7 +10,10 @@ export class AssetListService {
       return JSON.parse(cached);
     }
 
-    const assets = await AssetRepository.findByStudio(studioId, { skip: (page - 1) * limit, limit });
+    const assets = await AssetRepository.findByStudio(studioId, {
+      skip: (page - 1) * limit,
+      limit,
+    });
 
     const result = {
       page,
@@ -21,7 +24,7 @@ export class AssetListService {
     await redis.set(
       key,
       JSON.stringify(result),
-      "EX",
+      'EX',
       30 // Cache for 30 seconds
     );
 
@@ -39,10 +42,10 @@ export class AssetListService {
       match: `assets:list:${studioId}:*:*`,
       count: 100, // Number of keys to return per scan iteration
     });
-    let pipeline = redis.pipeline();
+    const pipeline = redis.pipeline();
     let keysFound = 0;
 
-    stream.on("data", (keys) => {
+    stream.on('data', (keys) => {
       if (keys.length) {
         keys.forEach((key: string) => {
           pipeline.del(key);
@@ -52,18 +55,18 @@ export class AssetListService {
     });
 
     return new Promise<void>((resolve, reject) => {
-      stream.on("end", async () => {
+      stream.on('end', async () => {
         if (keysFound > 0) {
           await pipeline.exec().catch((err) => {
-            console.error("Pipeline execution error:", err);
+            console.error('Pipeline execution error:', err);
             reject(err);
           });
         }
         resolve();
       });
 
-      stream.on("error", (err) => {
-        console.error("Scan stream error:", err);
+      stream.on('error', (err) => {
+        console.error('Scan stream error:', err);
         reject(err);
       });
     });

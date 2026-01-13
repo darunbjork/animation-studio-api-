@@ -1,10 +1,10 @@
 // jest.setup.js
 
 // Mock the ioredis module
-jest.mock("./src/infra/queue/redis", () => {
+jest.mock('./src/infra/queue/redis', () => {
   const mockRedis = {
     get: jest.fn().mockResolvedValue(null), // By default, cache miss
-    set: jest.fn().mockResolvedValue("OK"),
+    set: jest.fn().mockResolvedValue('OK'),
     del: jest.fn().mockResolvedValue(1), // Successfully deleted one key
     scanStream: jest.fn().mockImplementation(() => {
       const EventEmitter = require('events');
@@ -16,7 +16,7 @@ jest.mock("./src/infra/queue/redis", () => {
     pipeline: jest.fn().mockImplementation(() => ({
       del: jest.fn().mockReturnThis(),
       exec: jest.fn().mockResolvedValue([
-        [null, 1] // Mock successful deletion of one key
+        [null, 1], // Mock successful deletion of one key
       ]),
     })),
   };
@@ -24,7 +24,7 @@ jest.mock("./src/infra/queue/redis", () => {
 });
 
 // Mock the bull module
-jest.mock("bull", () => {
+jest.mock('bull', () => {
   return jest.fn().mockImplementation(() => ({
     add: jest.fn(),
     process: jest.fn(),

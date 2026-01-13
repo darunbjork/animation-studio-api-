@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const AssetVersionSchema = new Schema(
   {
     assetId: {
       type: Schema.Types.ObjectId,
-      ref: "Asset",
+      ref: 'Asset',
       required: true,
     },
     version: {
@@ -13,7 +13,7 @@ const AssetVersionSchema = new Schema(
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     file: {
@@ -31,7 +31,4 @@ const AssetVersionSchema = new Schema(
 AssetVersionSchema.index({ assetId: 1, version: 1 }, { unique: true });
 AssetVersionSchema.index({ assetId: 1, version: -1 });
 
-export const AssetVersionModel = model(
-  "AssetVersion",
-  AssetVersionSchema
-);
+export const AssetVersionModel = model('AssetVersion', AssetVersionSchema);

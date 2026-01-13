@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { AuthService } from "../services/AuthService";
+import { Request, Response } from 'express';
+import { AuthService } from '../services/AuthService';
 
 export class AuthController {
   static async register(req: Request, res: Response) {
@@ -8,10 +8,7 @@ export class AuthController {
   }
 
   static async login(req: Request, res: Response) {
-    const token = await AuthService.login(
-      req.body.email,
-      req.body.password
-    );
+    const token = await AuthService.login(req.body.email, req.body.password);
     res.json(token);
   }
 }

@@ -6,7 +6,7 @@ This project is the backend API for a modern animation studio, built with a focu
 
 🎬 **Senior Backend Engineer Mode Activated**
 Welcome to **Foundation & Animation Studio Bridge**.
-We’re going to build this **exactly** like a senior engineer would—slow, explicit, and with reasoning behind *every* decision.
+We’re going to build this **exactly** like a senior engineer would—slow, explicit, and with reasoning behind _every_ decision.
 
 You’re not just “setting up a server.”
 You’re laying the **structural foundation of a real animation studio backend** that could scale to **1000+ artists, millions of assets, and render farms**.
@@ -17,21 +17,21 @@ You’re laying the **structural foundation of a real animation studio backend**
 
 ## “Why Animation Studios Need Backend Systems”
 
-Before code, we anchor *why this exists*.
+Before code, we anchor _why this exists_.
 
 ### 🎥 Why animation studios are backend-heavy
 
 Animation studios are **not CRUD apps**. They are:
 
-* Asset factories (huge files, versioning, dependencies)
-* Workflow engines (pipeline stages, approvals, renders)
-* Collaboration platforms (many artists, same assets)
-* Infrastructure systems (queues, background jobs, compute)
+- Asset factories (huge files, versioning, dependencies)
+- Workflow engines (pipeline stages, approvals, renders)
+- Collaboration platforms (many artists, same assets)
+- Infrastructure systems (queues, background jobs, compute)
 
 Frontend (React) = **interaction layer**
 Backend = **source of truth + orchestration brain**
 
-> 💡 Think of the backend as the *production coordinator* of the studio.
+> 💡 Think of the backend as the _production coordinator_ of the studio.
 
 ---
 
@@ -68,7 +68,7 @@ REDIS_URL=redis://localhost:6379
 MONGO_URI=mongodb://localhost:27018/animation_studio
 ```
 
-*Note: Ensure your MongoDB (port 27018) and Redis (port 6379) services are accessible on `localhost` when using this configuration.*
+_Note: Ensure your MongoDB (port 27018) and Redis (port 6379) services are accessible on `localhost` when using this configuration._
 
 **Docker Compose (`docker-compose up -d`)**
 
@@ -79,25 +79,25 @@ REDIS_URL=redis://redis:6379
 MONGO_URI=mongodb://mongo:27017/animation_studio
 ```
 
-*Note: The `api` service inside Docker will resolve `redis` and `mongo` to the respective containers within the Docker network.*
+_Note: The `api` service inside Docker will resolve `redis` and `mongo` to the respective containers within the Docker network._
 
 ---
 
-| Command | Description | Environment |
-| :--- | :--- | :--- |
-| `docker-compose up -d` | Starts background services (e.g., Redis) in detached mode. | Development & Production |
-| `npm run dev` | Starts the API server with auto-reloading for development. | Development |
-| `npm run worker:render` | Starts the render worker with auto-reloading for development. | Development |
-| `npm test` | Runs the full automated test suite using Jest. | Development |
-| `npx tsc --noEmit` | Performs a static type-check of the entire codebase. | Development |
-| `npm run build` | Compiles TypeScript to production-ready JavaScript in the `dist` folder. | Production |
-| `npm run start` | Runs the compiled JavaScript application from the `dist` folder. | Production |
+| Command                 | Description                                                              | Environment              |
+| :---------------------- | :----------------------------------------------------------------------- | :----------------------- |
+| `docker-compose up -d`  | Starts background services (e.g., Redis) in detached mode.               | Development & Production |
+| `npm run dev`           | Starts the API server with auto-reloading for development.               | Development              |
+| `npm run worker:render` | Starts the render worker with auto-reloading for development.            | Development              |
+| `npm test`              | Runs the full automated test suite using Jest.                           | Development              |
+| `npx tsc --noEmit`      | Performs a static type-check of the entire codebase.                     | Development              |
+| `npm run build`         | Compiles TypeScript to production-ready JavaScript in the `dist` folder. | Production               |
+| `npm run start`         | Runs the compiled JavaScript application from the `dist` folder.         | Production               |
 
 ---
 
 🎬 **MongoDB + Authentication (Senior Backend Mode)**
 
-> *“Database design vs React state for animation data”*
+> _“Database design vs React state for animation data”_
 
 You’re officially moving from **“server exists”** → **“system of record exists.”**
 This is where backend engineering truly begins.
@@ -119,7 +119,7 @@ Before code, let’s reframe how you should should think.
 | Easy to mutate | Must be auditable     |
 
 > 🎯 In an animation studio, **MongoDB is the studio vault**.
-> React is just a *viewer/editor*.
+> React is just a _viewer/editor_.
 
 ---
 
@@ -141,11 +141,11 @@ This is **enterprise identity infrastructure**.
 
 🎬 **Service Layer Architecture (Senior Backend Mode)**
 
-> *“Backend services vs React components for asset management”*
+> _“Backend services vs React components for asset management”_
 
 This is where you **cross the senior threshold**.
 
-If the previous work was *foundation* and *identity*, this is **architecture discipline** — the thing that separates:
+If the previous work was _foundation_ and _identity_, this is **architecture discipline** — the thing that separates:
 
 > ❌ “It works”
 > ✅ “It scales, is testable, and survives teams”
@@ -167,7 +167,7 @@ If the previous work was *foundation* and *identity*, this is **architecture dis
 **Rule:**
 
 > Controllers should be as dumb as JSX.
-> Services are where *thinking happens*.
+> Services are where _thinking happens_.
 
 ---
 
@@ -188,7 +188,7 @@ This is the **spine of the entire platform**.
 
 🎬 **Error Handling & Observability (Senior Backend Mode)**
 
-> *“Error boundaries vs backend resilience for render failures”*
+> _“Error boundaries vs backend resilience for render failures”_
 
 This work focuses on **production survival**.
 
@@ -196,10 +196,10 @@ Most systems don’t fail because of bad features; they fail because **when some
 
 Animation studios face unique challenges:
 
-* Long-running render jobs
-* External tools (FFmpeg, render farms)
-* Large files
-* Async pipelines
+- Long-running render jobs
+- External tools (FFmpeg, render farms)
+- Large files
+- Async pipelines
 
 This phase builds **backend resilience + visibility** like a real studio platform.
 
@@ -239,7 +239,7 @@ This is **senior+ territory**.
 
 🎬 **Asset CRUD Mastery (Senior Backend Mode)**
 
-> *“REST APIs vs React hooks for asset management”*
+> _“REST APIs vs React hooks for asset management”_
 
 This phase transforms the **architecture** into a **production-ready API surface**. This is where experienced engineers meticulously consider **edge cases, ownership, pagination, and API contracts**.
 
@@ -277,7 +277,7 @@ This work accomplishes:
 
 🎬 **File Upload System (Senior Backend Mode)**
 
-> *“Large file handling vs frontend uploads”*
+> _“Large file handling vs frontend uploads”_
 
 This work addresses **production file handling**.
 
@@ -326,32 +326,32 @@ This system handles large file uploads efficiently by prioritizing streaming ove
 
 #### Key Principles
 
-| Principle             | Description                                                                                             | Why it Matters                                                                        |
-| :-------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
-| **Streaming Uploads** | Files are processed in chunks and written directly to disk/storage, avoiding loading into memory.         | Prevents memory exhaustion, supports large files (GBs), and maintains server responsiveness. |
-| **Storage Abstraction** | A `StorageProvider` interface (`src/infra/storage/StorageProvider.ts`) defines how files are saved.     | Allows easy swapping between local storage, S3, GCS, etc., without changing core logic. |
-| **Local Disk Implementation** | `LocalStorageProvider.ts` saves files to `uploads/{studioId}/{assetId}/v{version}`.            | Demonstrates streaming: files move from Multer's temp directory to final destination.     |
-| **Multer Configuration** | Configured with `dest: path.resolve("tmp")` and a `fileSize` limit (e.g., 10GB).                         | Uses OS's efficient temp file handling; protects against DoS/excessively large uploads.   |
-| **Asset Model Extension** | `Asset.ts` (`src/app/repositories/models/Asset.ts`) now includes a `file` object.                   | Stores metadata (`path`, `size`, `mimeType`) about the uploaded file; database stores *pointers*, not blobs. |
-| **Upload Service**    | `AssetUploadService.ts` orchestrates the upload: validates, saves via `LocalStorageProvider`, updates asset metadata. | Acts as the entry point for the asset pipeline (thumbnail, transcoding, etc.).            |
-| **Upload Controller** | `AssetUploadController.ts` is a thin layer, extracting `req.user`, `req.params`, `req.file` and delegating to the service. | Keeps controller focused on HTTP translation.                                         |
-| **Upload Route**      | `asset-upload.routes.ts` defines `POST /assets/:id/upload`, using `authenticate` and `upload.single("file")`. | Secured endpoint for file uploads, processing multipart form data.                    |
+| Principle                     | Description                                                                                                                | Why it Matters                                                                                               |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| **Streaming Uploads**         | Files are processed in chunks and written directly to disk/storage, avoiding loading into memory.                          | Prevents memory exhaustion, supports large files (GBs), and maintains server responsiveness.                 |
+| **Storage Abstraction**       | A `StorageProvider` interface (`src/infra/storage/StorageProvider.ts`) defines how files are saved.                        | Allows easy swapping between local storage, S3, GCS, etc., without changing core logic.                      |
+| **Local Disk Implementation** | `LocalStorageProvider.ts` saves files to `uploads/{studioId}/{assetId}/v{version}`.                                        | Demonstrates streaming: files move from Multer's temp directory to final destination.                        |
+| **Multer Configuration**      | Configured with `dest: path.resolve("tmp")` and a `fileSize` limit (e.g., 10GB).                                           | Uses OS's efficient temp file handling; protects against DoS/excessively large uploads.                      |
+| **Asset Model Extension**     | `Asset.ts` (`src/app/repositories/models/Asset.ts`) now includes a `file` object.                                          | Stores metadata (`path`, `size`, `mimeType`) about the uploaded file; database stores _pointers_, not blobs. |
+| **Upload Service**            | `AssetUploadService.ts` orchestrates the upload: validates, saves via `LocalStorageProvider`, updates asset metadata.      | Acts as the entry point for the asset pipeline (thumbnail, transcoding, etc.).                               |
+| **Upload Controller**         | `AssetUploadController.ts` is a thin layer, extracting `req.user`, `req.params`, `req.file` and delegating to the service. | Keeps controller focused on HTTP translation.                                                                |
+| **Upload Route**              | `asset-upload.routes.ts` defines `POST /assets/:id/upload`, using `authenticate` and `upload.single("file")`.              | Secured endpoint for file uploads, processing multipart form data.                                           |
 
 #### Why This Scales to Real Studios
 
-*   **No Memory Spikes**: Handles massive files without crashing the server.
-*   **Storage Flexibility**: Easy migration to cloud object storage.
-*   **Metadata vs. Blobs**: Keeps MongoDB performant by storing references.
-*   **Security**: Studio isolation protects valuable intellectual property.
-*   **Pipeline-Ready**: Designed for integration with complex asset processing workflows.
+- **No Memory Spikes**: Handles massive files without crashing the server.
+- **Storage Flexibility**: Easy migration to cloud object storage.
+- **Metadata vs. Blobs**: Keeps MongoDB performant by storing references.
+- **Security**: Studio isolation protects valuable intellectual property.
+- **Pipeline-Ready**: Designed for integration with complex asset processing workflows.
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Never store files directly in MongoDB.
-*   ❌ Never buffer large uploads into server memory.
-*   ❌ Never trust file extensions; validate MIME types and content.
-*   ✅ Always abstract your storage layer.
-*   ✅ Always enforce tenant isolation for assets.
+- ❌ Never store files directly in MongoDB.
+- ❌ Never buffer large uploads into server memory.
+- ❌ Never trust file extensions; validate MIME types and content.
+- ✅ Always abstract your storage layer.
+- ✅ Always enforce tenant isolation for assets.
 
 ---
 
@@ -371,17 +371,17 @@ Backend handles **truth + safety**.
 
 🎬 **Real-Time Collaboration (Senior Backend Mode)**
 
-> *“React real-time vs backend real-time for animation reviews”*
+> _“React real-time vs backend real-time for animation reviews”_
 
 This work introduces **true senior territory**: real-time collaboration.
 
-CRUD and uploads are foundational, but **real-time collaboration** is where systems evolve into *platforms*.
+CRUD and uploads are foundational, but **real-time collaboration** is where systems evolve into _platforms_.
 
-Animation studios *live* in real-time environments:
+Animation studios _live_ in real-time environments:
 
-* Directors comment while artists scrub frames
-* Producers approve shots instantly
-* Teams across time zones collaborate live
+- Directors comment while artists scrub frames
+- Producers approve shots instantly
+- Teams across time zones collaborate live
 
 This dynamic collaboration cannot be effectively simulated with traditional polling mechanisms.
 
@@ -424,47 +424,48 @@ This system provides collaborative features using WebSocket technology, specific
 
 #### Key Aspects
 
-| Aspect              | Description                                                                                             | Why it Matters                                                                        |
-| :------------------ | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
-| **Socket.IO Choice** | Provides robust features like reconnection handling, room abstraction, and transport fallbacks.              | Crucial for reliable real-time communication in production environments with varying network conditions. |
-| **Socket Server**   | `src/infra/realtime/socket.ts` initializes the Socket.IO server and implements authentication middleware. | Ensures only authorized users establish WebSocket connections; user data (`studioId`, `userId`, `role`) attached to `socket.data`. |
-| **Server Integration** | `server.ts` uses `http.createServer(app)` to wrap the Express app, allowing Socket.IO to share the same HTTP server. | Efficiently handles both HTTP requests and WebSocket connections on the same port.     |
-| **Domain Events**   | Paradigm shifts from requests to events (e.g., `asset:commented`, `asset:approved`).                         | Events reflect changes in application state, driving UI updates and notifications.    |
-| **Comment Event**   | `socket.on("asset:comment", ...)` handler emits `asset:commented` to studio-scoped rooms.                | Allows real-time commenting; ensures only relevant users receive updates for their studio. |
-| **Approval Event**  | `socket.on("asset:approve", ...)` handler checks user role (DIRECTOR/PRODUCER) before emitting `asset:approved` to studio rooms. | Enforces role-based authorization for real-time events.                               |
-| **Persistence Note**| Current focus is on real-time fan-out; comment/approval persistence handled in later phases.           | Real-time communication and data persistence are distinct problems, often decoupled.  |
+| Aspect                 | Description                                                                                                                      | Why it Matters                                                                                                                     |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
+| **Socket.IO Choice**   | Provides robust features like reconnection handling, room abstraction, and transport fallbacks.                                  | Crucial for reliable real-time communication in production environments with varying network conditions.                           |
+| **Socket Server**      | `src/infra/realtime/socket.ts` initializes the Socket.IO server and implements authentication middleware.                        | Ensures only authorized users establish WebSocket connections; user data (`studioId`, `userId`, `role`) attached to `socket.data`. |
+| **Server Integration** | `server.ts` uses `http.createServer(app)` to wrap the Express app, allowing Socket.IO to share the same HTTP server.             | Efficiently handles both HTTP requests and WebSocket connections on the same port.                                                 |
+| **Domain Events**      | Paradigm shifts from requests to events (e.g., `asset:commented`, `asset:approved`).                                             | Events reflect changes in application state, driving UI updates and notifications.                                                 |
+| **Comment Event**      | `socket.on("asset:comment", ...)` handler emits `asset:commented` to studio-scoped rooms.                                        | Allows real-time commenting; ensures only relevant users receive updates for their studio.                                         |
+| **Approval Event**     | `socket.on("asset:approve", ...)` handler checks user role (DIRECTOR/PRODUCER) before emitting `asset:approved` to studio rooms. | Enforces role-based authorization for real-time events.                                                                            |
+| **Persistence Note**   | Current focus is on real-time fan-out; comment/approval persistence handled in later phases.                                     | Real-time communication and data persistence are distinct problems, often decoupled.                                               |
 
 #### Why This Scales to 1000+ Artists
 
-*   **Horizontal Scaling**: Supports multiple Socket.IO server instances behind a load balancer.
-*   **Sticky Sessions/Redis Adapter**: Ensures consistent client connections and event propagation across servers.
-*   **Event Fan-out**: Efficiently broadcasts events to many connected clients.
-*   **Studio Isolation**: Ensures events are only delivered to clients within the same studio, preventing data leakage.
+- **Horizontal Scaling**: Supports multiple Socket.IO server instances behind a load balancer.
+- **Sticky Sessions/Redis Adapter**: Ensures consistent client connections and event propagation across servers.
+- **Event Fan-out**: Efficiently broadcasts events to many connected clients.
+- **Studio Isolation**: Ensures events are only delivered to clients within the same studio, preventing data leakage.
 
 #### Common Senior Mistakes (Avoid These)
 
-*   ❌ Broadcasting to everyone (inefficient and insecure).
-*   ❌ No authentication on WebSocket connections (critical security flaw).
-*   ❌ Using sockets for standard CRUD operations (best handled by REST APIs).
-*   ❌ Storing business logic solely in the frontend.
-*   ✅ Embrace event-driven backend design.
-*   ✅ Utilize scoped rooms for event distribution.
-*   ✅ Design stateless WebSocket servers for scalability.
+- ❌ Broadcasting to everyone (inefficient and insecure).
+- ❌ No authentication on WebSocket connections (critical security flaw).
+- ❌ Using sockets for standard CRUD operations (best handled by REST APIs).
+- ❌ Storing business logic solely in the frontend.
+- ✅ Embrace event-driven backend design.
+- ✅ Utilize scoped rooms for event distribution.
+- ✅ Design stateless WebSocket servers for scalability.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
 The frontend (e.g., a React application) integrates with this real-time system:
-*   **React Client Example**: The frontend would initialize a Socket.IO client, passing the JWT for authentication. It would then listen for specific events (`asset:commented`, `asset:approved`) to update its UI in real-time.
-*   **Frontend Renders State**: The React app focuses on rendering the current state received from the backend events and handles user interactions.
-*   **Backend Guarantees Delivery**: The backend is responsible for secure, authorized, and correctly scoped delivery of real-time events.
+
+- **React Client Example**: The frontend would initialize a Socket.IO client, passing the JWT for authentication. It would then listen for specific events (`asset:commented`, `asset:approved`) to update its UI in real-time.
+- **Frontend Renders State**: The React app focuses on rendering the current state received from the backend events and handles user interactions.
+- **Backend Guarantees Delivery**: The backend is responsible for secure, authorized, and correctly scoped delivery of real-time events.
 
 ---
 
 🎬 **Asset Versioning (Senior Backend Mode)**
 
-> *“Git-like versioning for animation assets”*
+> _“Git-like versioning for animation assets”_
 
 This work crosses another **major senior boundary**.
 
@@ -479,7 +480,7 @@ They **evolve** them.
 
 ### Think Git — not Dropbox
 
-| Naive System ❌      | Studio System ✅          |
+| Naive System ❌     | Studio System ✅         |
 | ------------------- | ------------------------ |
 | Replace file        | Create new version       |
 | No history          | Full audit trail         |
@@ -511,56 +512,56 @@ This is **real studio-grade asset management**.
 
 #### Key Principles
 
-*   **Never overwrite asset files.** Every change creates a new, immutable version.
-*   The `Asset` document becomes a container, and each `AssetVersion` document is a unit of truth.
+- **Never overwrite asset files.** Every change creates a new, immutable version.
+- The `Asset` document becomes a container, and each `AssetVersion` document is a unit of truth.
 
 #### Core Components
 
-| Component                       | Description                                                                                             |
-| :------------------------------ | :------------------------------------------------------------------------------------------------------ |
-| **`AssetVersion` Model**        | (`src/app/repositories/models/AssetVersion.ts`) Captures immutable snapshots: `assetId`, `version`, `createdBy`, `file` metadata, `changeNote`. Unique index on `{ assetId, version }`. |
-| **Update `Asset` Model**        | (`src/app/repositories/models/Asset.ts`) Adds `currentVersion` field, acting as a pointer to the active version. |
-| **Version Repository**          | (`src/app/repositories/AssetVersionRepository.ts`) Provides methods like `getLatestVersion`, `create`, `findByAsset`, `findVersion`. |
-| **Versioned Upload Service**    | (`src/app/services/AssetVersionService.ts`) Handles new version uploads: determines `nextVersion`, saves file to version-specific path, creates `AssetVersion` record, updates parent `Asset`'s `currentVersion`. |
-| **Version Controller**          | (`src/app/controllers/AssetVersionController.ts`) Manages HTTP requests for version uploads (`POST /assets/:id/versions`) and listings (`GET /assets/:id/versions`). |
-| **Version Routes**              | (`src/infra/http/routes/asset-version.routes.ts`) Defines secured routes for version creation and retrieval, mounted under `/assets`. |
-| **Rollback Feature**            | `AssetService` (`src/app/services/AssetService.ts`) includes `rollbackAsset(assetId, studioId, version)` to update `currentVersion` pointer. History is preserved; state is changed safely. |
+| Component                    | Description                                                                                                                                                                                                       |
+| :--------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`AssetVersion` Model**     | (`src/app/repositories/models/AssetVersion.ts`) Captures immutable snapshots: `assetId`, `version`, `createdBy`, `file` metadata, `changeNote`. Unique index on `{ assetId, version }`.                           |
+| **Update `Asset` Model**     | (`src/app/repositories/models/Asset.ts`) Adds `currentVersion` field, acting as a pointer to the active version.                                                                                                  |
+| **Version Repository**       | (`src/app/repositories/AssetVersionRepository.ts`) Provides methods like `getLatestVersion`, `create`, `findByAsset`, `findVersion`.                                                                              |
+| **Versioned Upload Service** | (`src/app/services/AssetVersionService.ts`) Handles new version uploads: determines `nextVersion`, saves file to version-specific path, creates `AssetVersion` record, updates parent `Asset`'s `currentVersion`. |
+| **Version Controller**       | (`src/app/controllers/AssetVersionController.ts`) Manages HTTP requests for version uploads (`POST /assets/:id/versions`) and listings (`GET /assets/:id/versions`).                                              |
+| **Version Routes**           | (`src/infra/http/routes/asset-version.routes.ts`) Defines secured routes for version creation and retrieval, mounted under `/assets`.                                                                             |
+| **Rollback Feature**         | `AssetService` (`src/app/services/AssetService.ts`) includes `rollbackAsset(assetId, studioId, version)` to update `currentVersion` pointer. History is preserved; state is changed safely.                       |
 
 #### Why This Scales to Real Studios
 
-*   **Non-Destructive Updates**: Old versions are never lost, ensuring robust recovery and historical analysis.
-*   **Full Audit History**: Every change is logged, providing a complete modification trail.
-*   **Safe Collaboration**: Artists can work on different versions or revert changes without affecting others' work.
-*   **Parallel Workflows**: Supports different branches or experimental versions.
-*   **Instant Rollbacks**: Quick reversion to any previous state without complex data migrations.
+- **Non-Destructive Updates**: Old versions are never lost, ensuring robust recovery and historical analysis.
+- **Full Audit History**: Every change is logged, providing a complete modification trail.
+- **Safe Collaboration**: Artists can work on different versions or revert changes without affecting others' work.
+- **Parallel Workflows**: Supports different branches or experimental versions.
+- **Instant Rollbacks**: Quick reversion to any previous state without complex data migrations.
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Avoid overwriting files (leads to irreversible data loss).
-*   ❌ Avoid deleting versions (eliminates audit trails).
-*   ❌ Avoid storing versions *inside* the asset document (bloated documents, poor query performance for asset history).
-*   ❌ Ensure unique constraints for version integrity.
-*   ✅ Embrace immutable versions.
-*   ✅ Implement pointer-based rollback.
-*   ✅ Isolate file paths for each version.
-*   ✅ Design for auditability.
+- ❌ Avoid overwriting files (leads to irreversible data loss).
+- ❌ Avoid deleting versions (eliminates audit trails).
+- ❌ Avoid storing versions _inside_ the asset document (bloated documents, poor query performance for asset history).
+- ❌ Ensure unique constraints for version integrity.
+- ✅ Embrace immutable versions.
+- ✅ Implement pointer-based rollback.
+- ✅ Isolate file paths for each version.
+- ✅ Design for auditability.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend               | Backend                      |
-| :--------------------- | :--------------------------- |
-| Version dropdown       | `GET /assets/:id/versions`   |
-| Upload new file        | `POST /assets/:id/versions`  |
-| Rollback button        | `PATCH /assets/:id/rollback` |
-| Change notes           | `changeNote` field           |
+| Frontend         | Backend                      |
+| :--------------- | :--------------------------- |
+| Version dropdown | `GET /assets/:id/versions`   |
+| Upload new file  | `POST /assets/:id/versions`  |
+| Rollback button  | `PATCH /assets/:id/rollback` |
+| Change notes     | `changeNote` field           |
 
 ---
 
 🎬 **Render Queue System (Senior Backend Mode)**
 
-> *“Background processing vs React async patterns”*
+> _“Background processing vs React async patterns”_
 
 This work is a **huge leap** into distributed, asynchronous systems.
 HTTP requests should never be blocked by heavy work like rendering. We solve this by building a **job queue**—the core of a render farm.
@@ -579,7 +580,7 @@ HTTP requests should never be blocked by heavy work like rendering. We solve thi
 | Retry button    | Automatic retry   |
 | UI thread       | Worker process    |
 
-> 🎯 **Never block HTTP**. Render jobs must live *outside* the request lifecycle.
+> 🎯 **Never block HTTP**. Render jobs must live _outside_ the request lifecycle.
 
 ---
 
@@ -602,47 +603,47 @@ This is **staff-level backend engineering**.
 
 #### Key Principles
 
-*   **API is a dispatcher:** The API's only job is to accept a render request and enqueue it. It responds immediately with `202 Accepted`.
-*   **Worker does the work:** A separate, isolated worker process picks up jobs from the queue, preventing any impact on API performance.
-*   **Database is the source of truth:** A `RenderJob` model tracks the status, progress, and history of every job, providing an auditable record.
-*   **Real-time feedback:** The worker emits progress events over WebSockets, giving the user a live view of the render.
+- **API is a dispatcher:** The API's only job is to accept a render request and enqueue it. It responds immediately with `202 Accepted`.
+- **Worker does the work:** A separate, isolated worker process picks up jobs from the queue, preventing any impact on API performance.
+- **Database is the source of truth:** A `RenderJob` model tracks the status, progress, and history of every job, providing an auditable record.
+- **Real-time feedback:** The worker emits progress events over WebSockets, giving the user a live view of the render.
 
 #### Core Components
 
-| Component | Description |
-| :--- | :--- |
-| **Queue Dependencies** | `bull` for job management; `ioredis` for Redis connection. |
-| **`RenderJob` Model** | (`models/RenderJob.ts`) Mongoose schema for `studioId`, `assetId`, `status`, `progress`, `error`. |
-| **Render Queue** | (`infra/queue/render.queue.ts`) Bull queue (`render-jobs`) connected to Redis via `env.REDIS_URL`. |
-| **`RenderService`** | (`services/RenderService.ts`) Creates `RenderJob` in DB, adds job to queue with retry logic. |
-| **`render.worker.ts`** | (`workers/render.worker.ts`) Processes jobs, updates DB, emits `render:progress` socket events. |
-| **`RenderController`** | (`controllers/RenderController.ts`) API endpoint to call `RenderService` and start the process. |
+| Component              | Description                                                                                        |
+| :--------------------- | :------------------------------------------------------------------------------------------------- |
+| **Queue Dependencies** | `bull` for job management; `ioredis` for Redis connection.                                         |
+| **`RenderJob` Model**  | (`models/RenderJob.ts`) Mongoose schema for `studioId`, `assetId`, `status`, `progress`, `error`.  |
+| **Render Queue**       | (`infra/queue/render.queue.ts`) Bull queue (`render-jobs`) connected to Redis via `env.REDIS_URL`. |
+| **`RenderService`**    | (`services/RenderService.ts`) Creates `RenderJob` in DB, adds job to queue with retry logic.       |
+| **`render.worker.ts`** | (`workers/render.worker.ts`) Processes jobs, updates DB, emits `render:progress` socket events.    |
+| **`RenderController`** | (`controllers/RenderController.ts`) API endpoint to call `RenderService` and start the process.    |
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Never do heavy work in controllers.
-*   ❌ Don't block the event loop.
-*   ❌ Don't rely on Redis as the only source of truth.
-*   ✅ Use background workers for async tasks.
-*   ✅ Design for failure with retries and backoff.
-*   ✅ Provide real-time UI updates for long-running jobs.
+- ❌ Never do heavy work in controllers.
+- ❌ Don't block the event loop.
+- ❌ Don't rely on Redis as the only source of truth.
+- ✅ Use background workers for async tasks.
+- ✅ Design for failure with retries and backoff.
+- ✅ Provide real-time UI updates for long-running jobs.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend        | Backend          |
-| --------------- | ---------------- |
-| “Render” button | `POST /assets/:id/render` (returns `202 Accepted`) |
-| Progress bar    | WebSocket events (`render:progress`) |
-| Status badge    | DB-backed state, updated via WebSocket events |
+| Frontend        | Backend                                               |
+| --------------- | ----------------------------------------------------- |
+| “Render” button | `POST /assets/:id/render` (returns `202 Accepted`)    |
+| Progress bar    | WebSocket events (`render:progress`)                  |
+| Status badge    | DB-backed state, updated via WebSocket events         |
 | Retry button    | Could trigger another `POST /render` for a failed job |
 
 ---
 
 🎬 **Asset Pipeline Automation (Senior Backend Mode)**
 
-> *“Automated workflows vs manual processes”*
+> _“Automated workflows vs manual processes”_
 
 This connects everything you’ve built into a cohesive, automated **pipeline**. Instead of isolated features, we now have a production system that orchestrates asset processing from upload to render-ready.
 
@@ -652,12 +653,12 @@ This connects everything you’ve built into a cohesive, automated **pipeline**.
 
 ### Manual vs. Automated Thinking
 
-| Junior / Manual       | Senior / Automated       |
-| --------------------- | ------------------------ |
-| Upload file           | Upload triggers pipeline |
-| Click "generate"      | Thumbnail auto-generated |
-| Start render manually | Render auto-enqueued     |
-| Check status          | Pipeline state machine   |
+| Junior / Manual         | Senior / Automated       |
+| ----------------------- | ------------------------ |
+| Upload file             | Upload triggers pipeline |
+| Click "generate"        | Thumbnail auto-generated |
+| Start render manually   | Render auto-enqueued     |
+| Check status            | Pipeline state machine   |
 | “Did we forget a step?” | System guarantees order  |
 
 > 🎯 A pipeline is a **deterministic sequence of steps**, not just a collection of endpoints.
@@ -682,39 +683,39 @@ This is **senior → staff-level system design**.
 
 #### Key Principles
 
-*   **Orchestration, not Execution:** A new `pipelineQueue` is introduced. Its only job is to manage the *sequence* of pipeline steps, not to perform heavy work itself.
-*   **Trigger on Upload:** The pipeline is automatically started by the `AssetVersionService` the moment a new version is successfully uploaded.
-*   **State Machine in the Database:** A new `AssetPipeline` model tracks the lifecycle of an asset version (`UPLOADED` → `VALIDATING` → `PROCESSING_PREVIEW` → etc.), providing a clear, auditable status.
-*   **Workers for Each Step:** The pipeline worker (`pipeline.worker.ts`) walks through the state machine. In a real system, it would dispatch jobs to other specialized workers (e.g., a thumbnail worker, a validation worker). For now, it simulates these steps and then enqueues the final render job.
+- **Orchestration, not Execution:** A new `pipelineQueue` is introduced. Its only job is to manage the _sequence_ of pipeline steps, not to perform heavy work itself.
+- **Trigger on Upload:** The pipeline is automatically started by the `AssetVersionService` the moment a new version is successfully uploaded.
+- **State Machine in the Database:** A new `AssetPipeline` model tracks the lifecycle of an asset version (`UPLOADED` → `VALIDATING` → `PROCESSING_PREVIEW` → etc.), providing a clear, auditable status.
+- **Workers for Each Step:** The pipeline worker (`pipeline.worker.ts`) walks through the state machine. In a real system, it would dispatch jobs to other specialized workers (e.g., a thumbnail worker, a validation worker). For now, it simulates these steps and then enqueues the final render job.
 
 #### Core Components
 
-| Component | Description |
-| :--- | :--- |
-| **`AssetPipeline` Model** | (`models/AssetPipeline.ts`) Tracks pipeline `status` and `error` for each `assetId` and `version`. |
-| **Pipeline Queue** | (`infra/queue/pipeline.queue.ts`) A new Bull queue (`asset-pipeline`) dedicated to orchestration. |
-| **`AssetVersionService`** | (Updated) Now creates an `AssetPipeline` record and adds a job to the `pipelineQueue` on new version upload. |
-| **`pipeline.worker.ts`** | (`workers/pipeline.worker.ts`) The core orchestrator. It fetches the pipeline, updates its status through each step, and dispatches jobs to other queues (like the `renderQueue`). |
+| Component                 | Description                                                                                                                                                                        |
+| :------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`AssetPipeline` Model** | (`models/AssetPipeline.ts`) Tracks pipeline `status` and `error` for each `assetId` and `version`.                                                                                 |
+| **Pipeline Queue**        | (`infra/queue/pipeline.queue.ts`) A new Bull queue (`asset-pipeline`) dedicated to orchestration.                                                                                  |
+| **`AssetVersionService`** | (Updated) Now creates an `AssetPipeline` record and adds a job to the `pipelineQueue` on new version upload.                                                                       |
+| **`pipeline.worker.ts`**  | (`workers/pipeline.worker.ts`) The core orchestrator. It fetches the pipeline, updates its status through each step, and dispatches jobs to other queues (like the `renderQueue`). |
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Don't put pipeline orchestration logic in controllers.
-*   ❌ Don't run heavyweight processing (like FFmpeg) in an orchestration worker. The orchestrator dispatches; other workers execute.
-*   ❌ Avoid manual steps in a production workflow. If it can be automated, it should be.
-*   ✅ Use separate queues for different concerns (e.g., pipeline, rendering, transcoding).
-*   ✅ Make pipeline steps idempotent and retry-able.
+- ❌ Don't put pipeline orchestration logic in controllers.
+- ❌ Don't run heavyweight processing (like FFmpeg) in an orchestration worker. The orchestrator dispatches; other workers execute.
+- ❌ Avoid manual steps in a production workflow. If it can be automated, it should be.
+- ✅ Use separate queues for different concerns (e.g., pipeline, rendering, transcoding).
+- ✅ Make pipeline steps idempotent and retry-able.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend UI      | Backend System         |
-| ---------------- | ---------------------- |
-| Upload progress  | File upload stream     |
-| "Processing..." badge | `pipeline:update` WebSocket event |
-| Preview thumbnail | Output of a future thumbnail worker |
-| "Ready to Render" status | `RENDER_QUEUED` pipeline state |
-| Error message    | `FAILED` pipeline state with error |
+| Frontend UI              | Backend System                      |
+| ------------------------ | ----------------------------------- |
+| Upload progress          | File upload stream                  |
+| "Processing..." badge    | `pipeline:update` WebSocket event   |
+| Preview thumbnail        | Output of a future thumbnail worker |
+| "Ready to Render" status | `RENDER_QUEUED` pipeline state      |
+| Error message            | `FAILED` pipeline state with error  |
 
 Frontend reacts to the state of the backend systems. Backend **guarantees** the process.
 
@@ -722,9 +723,9 @@ Frontend reacts to the state of the backend systems. Backend **guarantees** the 
 
 🎬 **Performance Optimization & Large-Scale File Handling (Senior Backend Mode)**
 
-> *“Large file handling, streaming, and database scaling”*
+> _“Large file handling, streaming, and database scaling”_
 
-This section focuses on making the system survive at scale. We're moving from a system that *works* to a system that is performant, stable, and resilient under the pressure of thousands of artists and multi-gigabyte files.
+This section focuses on making the system survive at scale. We're moving from a system that _works_ to a system that is performant, stable, and resilient under the pressure of thousands of artists and multi-gigabyte files.
 
 ---
 
@@ -733,12 +734,13 @@ This section focuses on making the system survive at scale. We're moving from a 
 ### Performance is Not Just Speed
 
 True performance for a backend system means:
+
 - **Predictable Latency:** Responds in a reliable time frame.
 - **Bounded Memory Usage:** Never runs out of memory (OOM).
 - **Graceful Degradation:** Handles high load without collapsing.
 - **Stable Throughput:** Maintains a consistent rate of processing.
 
-> 🎯 A system that is *slightly slower but never crashes* is infinitely better than a fast system that is unstable.
+> 🎯 A system that is _slightly slower but never crashes_ is infinitely better than a fast system that is unstable.
 
 ---
 
@@ -760,45 +762,44 @@ This is **thinking in limits, pressure, and failure modes**.
 
 #### Key Principles
 
-*   **Stream Everything:** Large files are never loaded into server memory. The new `AssetDownloadController` streams files directly from storage to the client, handling backpressure automatically. It also supports HTTP Range Requests, allowing clients to pause and resume downloads.
-*   **Indexes are Mandatory:** Queries on large collections without indexes will kill database performance. We've added indexes to the `studioId`, `createdAt`, `status`, and `version` fields on our core models (`Asset`, `AssetVersion`, `RenderJob`) to ensure queries are fast and efficient.
-*   **Cache Hot Data:** Not all data is worth caching. The new `AssetCacheService` implements a simple read-through cache for asset metadata, a "hot path" that is read frequently. This reduces load on the database. The cache has a short TTL (Time To Live) to ensure data doesn't become too stale.
-*   **Control Concurrency:** Uncontrolled background jobs can overwhelm a system. We've introduced a concurrency limit to our queue processors (`render.worker.ts` and `pipeline.worker.ts`) to ensure that only a fixed number of heavy tasks run at the same time on a single worker instance.
+- **Stream Everything:** Large files are never loaded into server memory. The new `AssetDownloadController` streams files directly from storage to the client, handling backpressure automatically. It also supports HTTP Range Requests, allowing clients to pause and resume downloads.
+- **Indexes are Mandatory:** Queries on large collections without indexes will kill database performance. We've added indexes to the `studioId`, `createdAt`, `status`, and `version` fields on our core models (`Asset`, `AssetVersion`, `RenderJob`) to ensure queries are fast and efficient.
+- **Cache Hot Data:** Not all data is worth caching. The new `AssetCacheService` implements a simple read-through cache for asset metadata, a "hot path" that is read frequently. This reduces load on the database. The cache has a short TTL (Time To Live) to ensure data doesn't become too stale.
+- **Control Concurrency:** Uncontrolled background jobs can overwhelm a system. We've introduced a concurrency limit to our queue processors (`render.worker.ts` and `pipeline.worker.ts`) to ensure that only a fixed number of heavy tasks run at the same time on a single worker instance.
 
 #### Core Components
 
-| Component | Description |
-| :--- | :--- |
+| Component                     | Description                                                                                                                      |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
 | **`AssetDownloadController`** | (`controllers/AssetDownloadController.ts`) Streams a specific asset version to the client, with support for HTTP Range Requests. |
-| **Model Indexes** | (`models/*.ts`) Added `.index()` calls to Mongoose schemas for performance-critical query paths. |
-| **`AssetCacheService`** | (`services/AssetCacheService.ts`) A read-through cache using Redis to store and retrieve asset metadata, reducing DB load. |
-| **Worker Concurrency** | (`workers/*.ts`) The `.process()` method for Bull queues is now given a concurrency factor to limit parallel job execution. |
-
+| **Model Indexes**             | (`models/*.ts`) Added `.index()` calls to Mongoose schemas for performance-critical query paths.                                 |
+| **`AssetCacheService`**       | (`services/AssetCacheService.ts`) A read-through cache using Redis to store and retrieve asset metadata, reducing DB load.       |
+| **Worker Concurrency**        | (`workers/*.ts`) The `.process()` method for Bull queues is now given a concurrency factor to limit parallel job execution.      |
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Never load a large file into memory with `fs.readFile`. Always stream.
-*   ❌ Deploying to production without database indexes is a recipe for disaster.
-*   ❌ Over-caching is dangerous. Caching write-paths or authorization logic can lead to bugs and security holes.
-*   ❌ Running CPU-heavy tasks on the main API process will block the event loop and crash your service.
-*   ✅ Control worker concurrency to protect your system from load spikes.
+- ❌ Never load a large file into memory with `fs.readFile`. Always stream.
+- ❌ Deploying to production without database indexes is a recipe for disaster.
+- ❌ Over-caching is dangerous. Caching write-paths or authorization logic can lead to bugs and security holes.
+- ❌ Running CPU-heavy tasks on the main API process will block the event loop and crash your service.
+- ✅ Control worker concurrency to protect your system from load spikes.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend Feature | Backend Technique      |
-| ---------------- | ---------------------- |
-| Resumable Download | Streaming + HTTP Range Requests |
-| Infinite Scroll / Pagination | Bounded, indexed DB queries |
-| Fast Asset Loading | Redis Caching        |
-| Stable UI under Load | Worker Isolation & Backpressure |
+| Frontend Feature             | Backend Technique               |
+| ---------------------------- | ------------------------------- |
+| Resumable Download           | Streaming + HTTP Range Requests |
+| Infinite Scroll / Pagination | Bounded, indexed DB queries     |
+| Fast Asset Loading           | Redis Caching                   |
+| Stable UI under Load         | Worker Isolation & Backpressure |
 
 ---
 
 🎬 **Advanced Asset Relationships & Dependency Graphs (Senior Backend Mode)**
 
-> *“Dependency graphs, asset linking, and impact analysis”*
+> _“Dependency graphs, asset linking, and impact analysis”_
 
 Today, your system evolves from a "backend for assets" to a **production brain** that understands relationships. In animation, changing one asset can impact many others. This feature enables the system to understand and predict these impacts.
 
@@ -808,7 +809,7 @@ Today, your system evolves from a "backend for assets" to a **production brain**
 
 ### From Lists → Graphs
 
-| Naive Thinking ❌       | Senior Thinking ✅         |
+| Naive Thinking ❌      | Senior Thinking ✅        |
 | ---------------------- | ------------------------- |
 | Assets are independent | Assets form a graph       |
 | Flat CRUD              | Directed dependencies     |
@@ -837,39 +838,39 @@ This is **deep senior / staff-level architecture**.
 
 #### Key Principles
 
-*   **Explicit, Version-Aware Dependencies:** Dependencies are modeled explicitly in a separate collection, not embedded in asset documents. This allows for graph queries, scalability, and flexibility. Each dependency links specific *versions* of assets, ensuring stability even when new versions of parent assets are released.
-*   **No Circular Dependencies:** A `DependencyService` is implemented to perform a Depth-First Search (DFS) check for cycles before a new dependency is created, preventing infinite loops and ensuring a valid DAG.
-*   **Impact Analysis:** The `ImpactAnalysisService` uses a recursive graph traversal to find all assets that would be affected by a change to a particular asset version, providing crucial insights for artists and producers.
+- **Explicit, Version-Aware Dependencies:** Dependencies are modeled explicitly in a separate collection, not embedded in asset documents. This allows for graph queries, scalability, and flexibility. Each dependency links specific _versions_ of assets, ensuring stability even when new versions of parent assets are released.
+- **No Circular Dependencies:** A `DependencyService` is implemented to perform a Depth-First Search (DFS) check for cycles before a new dependency is created, preventing infinite loops and ensuring a valid DAG.
+- **Impact Analysis:** The `ImpactAnalysisService` uses a recursive graph traversal to find all assets that would be affected by a change to a particular asset version, providing crucial insights for artists and producers.
 
 #### Core Components
 
-| Component | Description |
-| :--- | :--- |
-| **`AssetDependency` Model** | (`models/AssetDependency.ts`) Stores `parentAssetId`, `parentVersion`, `childAssetId`, `childVersion`, and `type` of relationship. |
-| **`AssetDependencyRepository`** | (`repositories/AssetDependencyRepository.ts`) Provides CRUD and lookup functions for `AssetDependency` records. |
-| **`DependencyService`** | (`services/DependencyService.ts`) Contains logic to detect circular dependencies before creation. |
-| **`AssetDependencyService`** | (`services/AssetDependencyService.ts`) Orchestrates the creation of dependencies, using `DependencyService` to validate. |
-| **`ImpactAnalysisService`** | (`services/ImpactAnalysisService.ts`) Implements recursive logic to find all downstream assets impacted by a change. |
+| Component                       | Description                                                                                                                                                                |
+| :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`AssetDependency` Model**     | (`models/AssetDependency.ts`) Stores `parentAssetId`, `parentVersion`, `childAssetId`, `childVersion`, and `type` of relationship.                                         |
+| **`AssetDependencyRepository`** | (`repositories/AssetDependencyRepository.ts`) Provides CRUD and lookup functions for `AssetDependency` records.                                                            |
+| **`DependencyService`**         | (`services/DependencyService.ts`) Contains logic to detect circular dependencies before creation.                                                                          |
+| **`AssetDependencyService`**    | (`services/AssetDependencyService.ts`) Orchestrates the creation of dependencies, using `DependencyService` to validate.                                                   |
+| **`ImpactAnalysisService`**     | (`services/ImpactAnalysisService.ts`) Implements recursive logic to find all downstream assets impacted by a change.                                                       |
 | **`AssetDependencyController`** | (`controllers/AssetDependencyController.ts`) Provides API endpoints for linking assets (`POST /assets/link`), retrieving parents/children, and performing impact analysis. |
 
 #### Common Experienced Engineer Warnings
 
-*   ❌ Storing dependencies as simple arrays within asset documents: This makes complex graph queries inefficient and hard to scale.
-*   ❌ Ignoring circular dependencies: Leads to infinite loops and broken logic.
-*   ❌ Version-agnostic dependencies: New parent versions might unintentionally break old child versions.
-*   ✅ Model dependencies as a separate graph (DAG).
-*   ✅ Enforce version-aware relationships.
-*   ✅ Implement algorithms for cycle detection and impact analysis.
+- ❌ Storing dependencies as simple arrays within asset documents: This makes complex graph queries inefficient and hard to scale.
+- ❌ Ignoring circular dependencies: Leads to infinite loops and broken logic.
+- ❌ Version-agnostic dependencies: New parent versions might unintentionally break old child versions.
+- ✅ Model dependencies as a separate graph (DAG).
+- ✅ Enforce version-aware relationships.
+- ✅ Implement algorithms for cycle detection and impact analysis.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend Feature     | Backend Capability    |
-| -------------------- | --------------------- |
-| Dependency Graph UI  | `AssetDependency` model |
-| "What breaks?" Modal | Impact analysis       |
-| Change Warnings      | Cycle detection logic |
+| Frontend Feature       | Backend Capability                     |
+| ---------------------- | -------------------------------------- |
+| Dependency Graph UI    | `AssetDependency` model                |
+| "What breaks?" Modal   | Impact analysis                        |
+| Change Warnings        | Cycle detection logic                  |
 | Auto Re-render Trigger | Graph traversal + pipeline integration |
 
 Frontend visualizes the graph. Backend **reasons** about the relationships.
@@ -878,9 +879,9 @@ Frontend visualizes the graph. Backend **reasons** about the relationships.
 
 🎬 **Security Hardening & Threat Modeling (Senior Backend Mode)**
 
-> *“Asset protection, licensing, and studio-grade security”*
+> _“Asset protection, licensing, and studio-grade security”_
 
-Today, we shift our mindset from assuming *good intent* to **assuming compromise**. Security is not a feature; it’s a **system property** that must be built in from the ground up, ensuring the system *fails safely*.
+Today, we shift our mindset from assuming _good intent_ to **assuming compromise**. Security is not a feature; it’s a **system property** that must be built in from the ground up, ensuring the system _fails safely_.
 
 ---
 
@@ -916,45 +917,44 @@ This is **senior → staff-level responsibility**.
 
 #### Key Principles
 
-*   **Threat Modeling First:** We identify valuable assets, likely attackers, and potential attack vectors to proactively design defenses. This informs every security decision.
-*   **Centralized Authorization Logic:** Permission checks are consolidated in a `PermissionService`, preventing scattered logic and ensuring consistent policy enforcement across the application. Controllers ask for permissions; services decide.
-*   **Service-Level Enforcement:** Authorization checks are performed at the service layer, not just at the API route, preventing bypasses and making the system more robust.
-*   **Studio Isolation (Multi-Tenancy):** Every data access query related to assets or workflows is implicitly or explicitly filtered by `studioId`, safeguarding data privacy across different studios.
-*   **Secure Streaming Downloads:** Asset file downloads are always mediated by the API, which performs permission checks before streaming content. There are no publicly accessible file URLs.
-*   **Scoped JWTs:** JSON Web Tokens now include `scopes` in their payload. These scopes represent specific granular permissions (e.g., `assets:delete`).
-*   **`requireScope` Middleware:** A new middleware dynamically checks if a user's token possesses the required scopes for a given API endpoint, enforcing the principle of least privilege.
+- **Threat Modeling First:** We identify valuable assets, likely attackers, and potential attack vectors to proactively design defenses. This informs every security decision.
+- **Centralized Authorization Logic:** Permission checks are consolidated in a `PermissionService`, preventing scattered logic and ensuring consistent policy enforcement across the application. Controllers ask for permissions; services decide.
+- **Service-Level Enforcement:** Authorization checks are performed at the service layer, not just at the API route, preventing bypasses and making the system more robust.
+- **Studio Isolation (Multi-Tenancy):** Every data access query related to assets or workflows is implicitly or explicitly filtered by `studioId`, safeguarding data privacy across different studios.
+- **Secure Streaming Downloads:** Asset file downloads are always mediated by the API, which performs permission checks before streaming content. There are no publicly accessible file URLs.
+- **Scoped JWTs:** JSON Web Tokens now include `scopes` in their payload. These scopes represent specific granular permissions (e.g., `assets:delete`).
+- **`requireScope` Middleware:** A new middleware dynamically checks if a user's token possesses the required scopes for a given API endpoint, enforcing the principle of least privilege.
 
 #### Core Components
 
-| Component | Description |
-| :--- | :--- |
-| **`PermissionService`** | (`services/PermissionService.ts`) Centralizes authorization rules (e.g., `canDelete`, `canUpload`). |
-| **Service Checks** | Integration of `PermissionService` into `AssetService`, `AssetUploadService`, `AssetVersionService`. |
-| **JWT Scopes** | (`services/AuthService.ts` updated) JWT payload includes `scopes` for granular permissions. |
+| Component                     | Description                                                                                           |
+| :---------------------------- | :---------------------------------------------------------------------------------------------------- |
+| **`PermissionService`**       | (`services/PermissionService.ts`) Centralizes authorization rules (e.g., `canDelete`, `canUpload`).   |
+| **Service Checks**            | Integration of `PermissionService` into `AssetService`, `AssetUploadService`, `AssetVersionService`.  |
+| **JWT Scopes**                | (`services/AuthService.ts` updated) JWT payload includes `scopes` for granular permissions.           |
 | **`requireScope` Middleware** | (`shared/middlewares/requireScope.ts`) Enforces token scopes on API routes, ensuring least privilege. |
-| **`ForbiddenError`** | (`shared/errors/ForbiddenError.ts`) A custom error class for permission-denied scenarios. |
-
+| **`ForbiddenError`**          | (`shared/errors/ForbiddenError.ts`) A custom error class for permission-denied scenarios.             |
 
 #### Common Senior Security Mistakes
 
-*   ❌ Relying solely on frontend checks for authorization.
-*   ❌ Exposing direct public URLs to sensitive asset files.
-   *   ❌ Using only roles for authorization without resource-specific or granular checks.
-*   ❌ Granting overly broad permissions to tokens (not following least privilege).
-*   ✅ Implement defense-in-depth: multiple layers of security.
-*   ✅ Ensure multi-tenancy is enforced at every data access point.
-*   ✅ Always validate user permissions in the backend business logic.
+- ❌ Relying solely on frontend checks for authorization.
+- ❌ Exposing direct public URLs to sensitive asset files.
+- ❌ Using only roles for authorization without resource-specific or granular checks.
+- ❌ Granting overly broad permissions to tokens (not following least privilege).
+- ✅ Implement defense-in-depth: multiple layers of security.
+- ✅ Ensure multi-tenancy is enforced at every data access point.
+- ✅ Always validate user permissions in the backend business logic.
 
 ---
 
 🔗 FRONTEND CONNECTION
 
-| Frontend Concept   | Backend Enforcement   |
-| ------------------ | --------------------- |
-| Protected UI routes | Auth middleware       |
-| Disabled UI actions | Permission checks     |
-| Session expiration | Token rotation logic  |
-| Download buttons   | Secure streaming API  |
+| Frontend Concept    | Backend Enforcement  |
+| ------------------- | -------------------- |
+| Protected UI routes | Auth middleware      |
+| Disabled UI actions | Permission checks    |
+| Session expiration  | Token rotation logic |
+| Download buttons    | Secure streaming API |
 
 Frontend **reflects** security policies. Backend **enforces** them robustly.
 
@@ -968,92 +968,92 @@ Here is a brief overview of all tools and dependencies used in this project.
 
 These are the packages required for the application to run in production.
 
-| Package              | Description                                                                 |
-| -------------------- | --------------------------------------------------------------------------- |
-| `express`            | The core web framework for building the API endpoints.                      |
-| `dotenv`             | Loads environment variables from a `.env` file into `process.env`.          |
-| `helmet`             | Secures the Express app by setting various HTTP headers.                    |
-| `express-rate-limit` | Limits repeated requests to public APIs and/or endpoints to prevent abuse.  |
-| `mongoose`           | An Object Data Modeling (ODM) library for MongoDB and Node.js.              |
-| `bcrypt`             | A library for hashing passwords securely.                                   |
-| `jsonwebtoken`       | Implements JSON Web Tokens (JWT) for secure authentication.                 |
-| `winston`            | A versatile logging library for Node.js.                                    |
-| `prom-client`        | A Prometheus client for Node.js, enabling metric collection.                |
-| `express-validator`  | A middleware for Express.js that provides validation and sanitization features. |
-| `multer`             | A middleware for handling `multipart/form-data`, primarily for file uploads. |
+| Package              | Description                                                                            |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| `express`            | The core web framework for building the API endpoints.                                 |
+| `dotenv`             | Loads environment variables from a `.env` file into `process.env`.                     |
+| `helmet`             | Secures the Express app by setting various HTTP headers.                               |
+| `express-rate-limit` | Limits repeated requests to public APIs and/or endpoints to prevent abuse.             |
+| `mongoose`           | An Object Data Modeling (ODM) library for MongoDB and Node.js.                         |
+| `bcrypt`             | A library for hashing passwords securely.                                              |
+| `jsonwebtoken`       | Implements JSON Web Tokens (JWT) for secure authentication.                            |
+| `winston`            | A versatile logging library for Node.js.                                               |
+| `prom-client`        | A Prometheus client for Node.js, enabling metric collection.                           |
+| `express-validator`  | A middleware for Express.js that provides validation and sanitization features.        |
+| `multer`             | A middleware for handling `multipart/form-data`, primarily for file uploads.           |
 | `socket.io`          | Enables real-time, bidirectional, event-based communication between client and server. |
 
 ### Development Dependencies (`devDependencies`)
 
 These are the packages used only for development and testing, not for the production application.
 
-| Package                   | Description                                                               |
-| ------------------------- | ------------------------------------------------------------------------- |
-| `typescript`              | A superset of JavaScript that adds static types, improving code quality.  |
-| `ts-node-dev`             | Runs the TypeScript application and automatically restarts it when files change. |
-| `@types/node`             | Provides TypeScript type definitions for the Node.js runtime.            |
-| `@types/express`          | Provides TypeScript type definitions for the Express framework.           |
-| `jest`                    | A testing framework for writing and running tests.                        |
-| `ts-jest`                 | A Jest transformer that allows you to test TypeScript code.               |
-| `@types/jest`             | Provides TypeScript type definitions for the Jest testing framework.      |
-| `supertest`               | A library for testing HTTP endpoints, used for integration tests.         |
-| `@types/bcrypt`           | Provides TypeScript type definitions for the `bcrypt` library.            |
-| `@types/jsonwebtoken`     | Provides TypeScript type definitions for the `jsonwebtoken` library.      |
-| `@types/express-validator`| Provides TypeScript type definitions for the `express-validator` library. |
-| `@types/multer`           | Provides TypeScript type definitions for the `multer` library.            |
+| Package                    | Description                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `typescript`               | A superset of JavaScript that adds static types, improving code quality.         |
+| `ts-node-dev`              | Runs the TypeScript application and automatically restarts it when files change. |
+| `@types/node`              | Provides TypeScript type definitions for the Node.js runtime.                    |
+| `@types/express`           | Provides TypeScript type definitions for the Express framework.                  |
+| `jest`                     | A testing framework for writing and running tests.                               |
+| `ts-jest`                  | A Jest transformer that allows you to test TypeScript code.                      |
+| `@types/jest`              | Provides TypeScript type definitions for the Jest testing framework.             |
+| `supertest`                | A library for testing HTTP endpoints, used for integration tests.                |
+| `@types/bcrypt`            | Provides TypeScript type definitions for the `bcrypt` library.                   |
+| `@types/jsonwebtoken`      | Provides TypeScript type definitions for the `jsonwebtoken` library.             |
+| `@types/express-validator` | Provides TypeScript type definitions for the `express-validator` library.        |
+| `@types/multer`            | Provides TypeScript type definitions for the `multer` library.                   |
 
 ### Configuration and New Files
 
 These files configure the behavior of the tools we use or are new files introduced in the project.
 
-| File/Variable                         | Description                                                                 |
-| ------------------------------------- | --------------------------------------------------------------------------- |
-| `tsconfig.json`                       | Configures the TypeScript compiler (`tsc`) with rules for compiling our code. |
-| `jest.config.js`                      | Configures the Jest testing framework, telling it how to find and run tests.  |
-| `.gitignore`                          | Tells Git which files and folders to ignore (e.g., `node_modules`, `dist`). |
-| `Dockerfile`                          | Contains instructions for building a Docker image of our application.     |
-| `docker-compose.yml`                  | Defines and runs our multi-container Docker application.                 |
-| `.env`                                | Stores environment-specific variables like the `PORT`, `MONGO_URI`, and `JWT_SECRET`.                   |
-| `MONGO_URI` (in `.env`)               | The connection string for the MongoDB database.                             |
-| `JWT_SECRET` (in `.env`)              | A secret key used to sign and verify JSON Web Tokens.                       |
-| `src/infra/database/mongoose.ts`      | Handles the connection to the MongoDB database.                           |
-| `src/app/repositories/models/Studio.ts` | Defines the Mongoose schema and model for a Studio.                       |
-| `src/app/repositories/models/User.ts`   | Defines the Mongoose schema and model for a User, including password hashing. |
-| `src/app/services/AuthService.ts`     | Contains the business logic for user registration and login.              |
-| `src/app/controllers/AuthController.ts` | Handles HTTP requests related to authentication.                          |
-| `src/infra/http/routes/auth.routes.ts` | Defines the API routes for authentication.                                |
-| `src/shared/middlewares/auth.ts`      | Middleware to authenticate requests using JWT.                            |
-| `tests/auth.test.ts`                  | Contains tests for the authentication flow.                               |
-| `src/app/repositories/models/Asset.ts`  | Defines the Mongoose schema and model for an Asset.                       |
-| `src/app/repositories/AssetRepository.ts` | Abstracts the data access logic for Assets.                               |
-| `src/app/services/AssetService.ts`      | Contains the business logic for asset creation and retrieval.             |
-| `src/app/controllers/AssetController.ts`  | Handles HTTP requests related to assets.                                  |
-| `src/infra/http/routes/asset.routes.ts` | Defines the API routes for assets, protected by authentication.           |
-| `tests/asset.service.test.ts`         | Contains service-level tests for the asset business logic.                |
-| `src/shared/errors/DomainError.ts`    | Defines an abstract base class for custom domain-specific errors.         |
-| `src/shared/errors/ValidationError.ts`| Represents validation-related errors (e.g., missing required fields).     |
-| `src/shared/errors/AuthorizationError.ts`| Represents authorization-related errors (e.g., insufficient permissions). |
-| `src/shared/errors/RenderError.ts`    | Represents errors specific to rendering failures.                         |
-| `src/shared/middlewares/correlationId.ts` | Assigns a unique correlation ID to each incoming request for tracing.     |
-| `src/infra/logging/logger.ts`         | Configures Winston for structured logging across the application.         |
-| `src/shared/middlewares/requestLogger.ts` | Logs details of incoming HTTP requests, including their correlation ID.   |
-| `src/infra/metrics/metrics.ts`        | Configures Prometheus metrics collection, including HTTP request counts.  |
-| `src/infra/http/metrics.ts`           | Exposes an HTTP endpoint (`/metrics`) for Prometheus to scrape metrics.   |
-| `/ready` endpoint (in `health.ts`)    | An endpoint indicating the application is ready to handle requests (beyond just being alive). |
-| `src/infra/http/validators/asset.validators.ts` | Defines validation rules for asset-related HTTP requests.                   |
-| `tests/asset.api.test.ts`             | Contains comprehensive API tests for asset CRUD operations, including pagination and ownership checks. |
-| `src/infra/storage/StorageProvider.ts`| Defines an interface for abstracting file storage operations.             |
-| `src/infra/storage/LocalStorageProvider.ts` | Provides a local filesystem implementation of the `StorageProvider` interface. |
-| `src/infra/http/upload.ts`            | Configures Multer for handling multipart file uploads, specifying destination and limits. |
-| `src/app/services/AssetUploadService.ts`| Handles the business logic for uploading assets, interacting with storage and asset repository. |
-| `src/app/controllers/AssetUploadController.ts` | Manages HTTP requests for asset uploads.                                  |
-| `src/infra/http/routes/asset-upload.routes.ts` | Defines the API routes for asset uploads.                                 |
-| `src/infra/realtime/socket.ts`        | Initializes and configures the Socket.IO server for real-time communication, including authentication and event handling. |
-| `src/app/repositories/models/AssetVersion.ts` | Defines the Mongoose schema and model for an Asset Version, capturing immutable snapshots. |
-| `src/app/repositories/AssetVersionRepository.ts` | Provides data access methods specifically for AssetVersion documents, such as retrieving latest version. |
-| `src/app/services/AssetVersionService.ts` | Handles the business logic for creating new asset versions during uploads, managing versioning logic. |
-| `src/app/controllers/AssetVersionController.ts` | Manages HTTP requests related to asset versions, including uploads and listing. |
-| `src/infra/http/routes/asset-version.routes.ts` | Defines the API routes for asset versioning operations.                   |
+| File/Variable                                    | Description                                                                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `tsconfig.json`                                  | Configures the TypeScript compiler (`tsc`) with rules for compiling our code.                                             |
+| `jest.config.js`                                 | Configures the Jest testing framework, telling it how to find and run tests.                                              |
+| `.gitignore`                                     | Tells Git which files and folders to ignore (e.g., `node_modules`, `dist`).                                               |
+| `Dockerfile`                                     | Contains instructions for building a Docker image of our application.                                                     |
+| `docker-compose.yml`                             | Defines and runs our multi-container Docker application.                                                                  |
+| `.env`                                           | Stores environment-specific variables like the `PORT`, `MONGO_URI`, and `JWT_SECRET`.                                     |
+| `MONGO_URI` (in `.env`)                          | The connection string for the MongoDB database.                                                                           |
+| `JWT_SECRET` (in `.env`)                         | A secret key used to sign and verify JSON Web Tokens.                                                                     |
+| `src/infra/database/mongoose.ts`                 | Handles the connection to the MongoDB database.                                                                           |
+| `src/app/repositories/models/Studio.ts`          | Defines the Mongoose schema and model for a Studio.                                                                       |
+| `src/app/repositories/models/User.ts`            | Defines the Mongoose schema and model for a User, including password hashing.                                             |
+| `src/app/services/AuthService.ts`                | Contains the business logic for user registration and login.                                                              |
+| `src/app/controllers/AuthController.ts`          | Handles HTTP requests related to authentication.                                                                          |
+| `src/infra/http/routes/auth.routes.ts`           | Defines the API routes for authentication.                                                                                |
+| `src/shared/middlewares/auth.ts`                 | Middleware to authenticate requests using JWT.                                                                            |
+| `tests/auth.test.ts`                             | Contains tests for the authentication flow.                                                                               |
+| `src/app/repositories/models/Asset.ts`           | Defines the Mongoose schema and model for an Asset.                                                                       |
+| `src/app/repositories/AssetRepository.ts`        | Abstracts the data access logic for Assets.                                                                               |
+| `src/app/services/AssetService.ts`               | Contains the business logic for asset creation and retrieval.                                                             |
+| `src/app/controllers/AssetController.ts`         | Handles HTTP requests related to assets.                                                                                  |
+| `src/infra/http/routes/asset.routes.ts`          | Defines the API routes for assets, protected by authentication.                                                           |
+| `tests/asset.service.test.ts`                    | Contains service-level tests for the asset business logic.                                                                |
+| `src/shared/errors/DomainError.ts`               | Defines an abstract base class for custom domain-specific errors.                                                         |
+| `src/shared/errors/ValidationError.ts`           | Represents validation-related errors (e.g., missing required fields).                                                     |
+| `src/shared/errors/AuthorizationError.ts`        | Represents authorization-related errors (e.g., insufficient permissions).                                                 |
+| `src/shared/errors/RenderError.ts`               | Represents errors specific to rendering failures.                                                                         |
+| `src/shared/middlewares/correlationId.ts`        | Assigns a unique correlation ID to each incoming request for tracing.                                                     |
+| `src/infra/logging/logger.ts`                    | Configures Winston for structured logging across the application.                                                         |
+| `src/shared/middlewares/requestLogger.ts`        | Logs details of incoming HTTP requests, including their correlation ID.                                                   |
+| `src/infra/metrics/metrics.ts`                   | Configures Prometheus metrics collection, including HTTP request counts.                                                  |
+| `src/infra/http/metrics.ts`                      | Exposes an HTTP endpoint (`/metrics`) for Prometheus to scrape metrics.                                                   |
+| `/ready` endpoint (in `health.ts`)               | An endpoint indicating the application is ready to handle requests (beyond just being alive).                             |
+| `src/infra/http/validators/asset.validators.ts`  | Defines validation rules for asset-related HTTP requests.                                                                 |
+| `tests/asset.api.test.ts`                        | Contains comprehensive API tests for asset CRUD operations, including pagination and ownership checks.                    |
+| `src/infra/storage/StorageProvider.ts`           | Defines an interface for abstracting file storage operations.                                                             |
+| `src/infra/storage/LocalStorageProvider.ts`      | Provides a local filesystem implementation of the `StorageProvider` interface.                                            |
+| `src/infra/http/upload.ts`                       | Configures Multer for handling multipart file uploads, specifying destination and limits.                                 |
+| `src/app/services/AssetUploadService.ts`         | Handles the business logic for uploading assets, interacting with storage and asset repository.                           |
+| `src/app/controllers/AssetUploadController.ts`   | Manages HTTP requests for asset uploads.                                                                                  |
+| `src/infra/http/routes/asset-upload.routes.ts`   | Defines the API routes for asset uploads.                                                                                 |
+| `src/infra/realtime/socket.ts`                   | Initializes and configures the Socket.IO server for real-time communication, including authentication and event handling. |
+| `src/app/repositories/models/AssetVersion.ts`    | Defines the Mongoose schema and model for an Asset Version, capturing immutable snapshots.                                |
+| `src/app/repositories/AssetVersionRepository.ts` | Provides data access methods specifically for AssetVersion documents, such as retrieving latest version.                  |
+| `src/app/services/AssetVersionService.ts`        | Handles the business logic for creating new asset versions during uploads, managing versioning logic.                     |
+| `src/app/controllers/AssetVersionController.ts`  | Manages HTTP requests related to asset versions, including uploads and listing.                                           |
+| `src/infra/http/routes/asset-version.routes.ts`  | Defines the API routes for asset versioning operations.                                                                   |
 
 ### Generating Secrets
 
@@ -1066,12 +1066,16 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Step 4 — Create the file (this must succeed first)
 
 Run this exact command in your terminal:
+
 ```bash
 echo "This is a dummy character model data." > character.fbx
 ```
+
 Then confirm the file exists:
+
 ```bash
 ls -l character.fbx
 ```
+
 If you see the file listed, you're good.
 If you don’t see it, you’re probably in the wrong directory — just tell me what OS you’re on and I’ll guide you.

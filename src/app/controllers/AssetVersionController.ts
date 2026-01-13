@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { AssetVersionService } from "../services/AssetVersionService";
-import { AssetVersionRepository } from "../repositories/AssetVersionRepository";
+import { Request, Response } from 'express';
+import { AssetVersionService } from '../services/AssetVersionService';
+import { AssetVersionRepository } from '../repositories/AssetVersionRepository';
 
 export class AssetVersionController {
   static async upload(req: Request, res: Response) {
@@ -21,9 +21,7 @@ export class AssetVersionController {
   }
 
   static async list(req: Request, res: Response) {
-    const versions = await AssetVersionRepository.findByAsset(
-      req.params.id
-    );
+    const versions = await AssetVersionRepository.findByAsset(req.params.id);
 
     res.json(versions);
   }

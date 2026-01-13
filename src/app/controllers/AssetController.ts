@@ -1,18 +1,21 @@
-import { Request, Response } from "express";
-import { AssetService } from "../services/AssetService";
-import { AssetListService } from "../services/AssetListService";
-import { logger } from "../../infra/logging/logger"; // Import logger
+import { Request, Response } from 'express';
+import { AssetService } from '../services/AssetService';
+import { AssetListService } from '../services/AssetListService';
+import { logger } from '../../infra/logging/logger'; // Import logger
 
 export class AssetController {
   static async create(req: Request, res: Response) {
     const correlationId = req.correlationId;
-    const asset = await AssetService.createAsset({
-      ...req.body,
-      studioId: req.user!.studioId, // Add non-null assertion
-      createdBy: req.user!.userId, // Add non-null assertion
-    }, correlationId);
+    const asset = await AssetService.createAsset(
+      {
+        ...req.body,
+        studioId: req.user!.studioId, // Add non-null assertion
+        createdBy: req.user!.userId, // Add non-null assertion
+      },
+      correlationId
+    );
 
-    logger.info("Asset created", {
+    logger.info('Asset created', {
       correlationId,
       assetId: asset._id,
       studioId: asset.studioId,
@@ -33,7 +36,7 @@ export class AssetController {
       limit
     );
 
-    logger.info("Assets listed", {
+    logger.info('Assets listed', {
       correlationId,
       studioId: req.user!.studioId, // Add non-null assertion
       page,
@@ -52,7 +55,7 @@ export class AssetController {
       correlationId
     );
 
-    logger.info("Asset retrieved", {
+    logger.info('Asset retrieved', {
       correlationId,
       assetId: asset._id,
       studioId: asset.studioId,
@@ -70,7 +73,7 @@ export class AssetController {
       correlationId
     );
 
-    logger.info("Asset updated", {
+    logger.info('Asset updated', {
       correlationId,
       assetId: asset._id,
       studioId: asset.studioId,
@@ -85,11 +88,11 @@ export class AssetController {
     await AssetService.deleteAsset(
       req.params.id,
       req.user!.studioId, // Add non-null assertion
-      req.user!.role,     // Add non-null assertion
+      req.user!.role, // Add non-null assertion
       correlationId
     );
 
-    logger.info("Asset deleted", {
+    logger.info('Asset deleted', {
       correlationId,
       assetId: req.params.id,
       studioId: req.user!.studioId, // Add non-null assertion
@@ -108,13 +111,15 @@ export class AssetController {
       correlationId
     );
 
-    logger.info("Asset rollback initiated", {
+    logger.info('Asset rollback initiated', {
       correlationId,
       assetId: req.params.id,
       studioId: req.user!.studioId, // Add non-null assertion
       version,
     });
 
-    res.status(200).json({ message: `Asset rolled back to version ${version}` });
+    res
+      .status(200)
+      .json({ message: `Asset rolled back to version ${version}` });
   }
 }

@@ -1,6 +1,6 @@
-import { DependencyService } from "./DependencyService";
-import { AssetDependencyRepository } from "../repositories/AssetDependencyRepository";
-import { ValidationError } from "../../shared/errors/ValidationError";
+import { DependencyService } from './DependencyService';
+import { AssetDependencyRepository } from '../repositories/AssetDependencyRepository';
+import { ValidationError } from '../../shared/errors/ValidationError';
 
 export class AssetDependencyService {
   static async linkAssets(params: {
@@ -16,7 +16,7 @@ export class AssetDependencyService {
     );
 
     if (createsCycle) {
-      throw new ValidationError("Circular dependency detected");
+      throw new ValidationError('Circular dependency detected');
     }
 
     return AssetDependencyRepository.create(params);

@@ -1,10 +1,8 @@
-import { AssetVersionModel } from "./models/AssetVersion";
+import { AssetVersionModel } from './models/AssetVersion';
 
 export class AssetVersionRepository {
   static async getLatestVersion(assetId: string) {
-    return AssetVersionModel
-      .findOne({ assetId })
-      .sort({ version: -1 });
+    return AssetVersionModel.findOne({ assetId }).sort({ version: -1 });
   }
 
   static create(data: any) {
@@ -12,9 +10,7 @@ export class AssetVersionRepository {
   }
 
   static findByAsset(assetId: string) {
-    return AssetVersionModel
-      .find({ assetId })
-      .sort({ version: -1 });
+    return AssetVersionModel.find({ assetId }).sort({ version: -1 });
   }
 
   static findVersion(assetId: string, version: number) {

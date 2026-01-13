@@ -1,15 +1,15 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const RenderJobSchema = new Schema(
   {
     studioId: {
       type: Schema.Types.ObjectId,
-      ref: "Studio",
+      ref: 'Studio',
       required: true,
     },
     assetId: {
       type: Schema.Types.ObjectId,
-      ref: "Asset",
+      ref: 'Asset',
       required: true,
     },
     version: {
@@ -18,8 +18,8 @@ const RenderJobSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["QUEUED", "PROCESSING", "COMPLETED", "FAILED"],
-      default: "QUEUED",
+      enum: ['QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED'],
+      default: 'QUEUED',
     },
     progress: {
       type: Number,
@@ -32,4 +32,4 @@ const RenderJobSchema = new Schema(
 
 RenderJobSchema.index({ studioId: 1, status: 1 });
 
-export const RenderJobModel = model("RenderJob", RenderJobSchema);
+export const RenderJobModel = model('RenderJob', RenderJobSchema);

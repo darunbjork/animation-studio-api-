@@ -1,6 +1,6 @@
-import { DomainError } from "./DomainError";
+import { DomainError } from './DomainError';
 
 export class AuthorizationError extends DomainError {
   statusCode = 403;
-  code = "AUTHORIZATION_ERROR";
+  code = 'AUTHORIZATION_ERROR';
 }

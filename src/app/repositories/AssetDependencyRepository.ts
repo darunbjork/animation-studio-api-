@@ -1,4 +1,4 @@
-import { AssetDependencyModel } from "./models/AssetDependency";
+import { AssetDependencyModel } from './models/AssetDependency';
 
 export class AssetDependencyRepository {
   static create(data: any) {

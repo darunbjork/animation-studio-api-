@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const AssetDependencySchema = new Schema(
   {
     parentAssetId: {
       type: Schema.Types.ObjectId,
-      ref: "Asset",
+      ref: 'Asset',
       required: true,
     },
     parentVersion: {
@@ -13,7 +13,7 @@ const AssetDependencySchema = new Schema(
     },
     childAssetId: {
       type: Schema.Types.ObjectId,
-      ref: "Asset",
+      ref: 'Asset',
       required: true,
     },
     childVersion: {
@@ -22,12 +22,8 @@ const AssetDependencySchema = new Schema(
     },
     type: {
       type: String,
-      enum: [
-        "USES",
-        "DEPENDS_ON",
-        "GENERATED_FROM",
-      ],
-      default: "DEPENDS_ON",
+      enum: ['USES', 'DEPENDS_ON', 'GENERATED_FROM'],
+      default: 'DEPENDS_ON',
     },
   },
   { timestamps: true }
@@ -39,6 +35,6 @@ AssetDependencySchema.index(
 );
 
 export const AssetDependencyModel = model(
-  "AssetDependency",
+  'AssetDependency',
   AssetDependencySchema
 );

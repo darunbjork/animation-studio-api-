@@ -1,4 +1,4 @@
-import { AssetDependencyRepository } from "../repositories/AssetDependencyRepository";
+import { AssetDependencyRepository } from '../repositories/AssetDependencyRepository';
 
 export class DependencyService {
   static async createsCycle(

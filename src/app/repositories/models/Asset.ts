@@ -1,21 +1,21 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const AssetSchema = new Schema(
   {
     studioId: {
       type: Schema.Types.ObjectId,
-      ref: "Studio",
+      ref: 'Studio',
       required: true,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     name: { type: String, required: true },
     type: {
       type: String,
-      enum: ["CHARACTER", "PROP", "ENVIRONMENT"],
+      enum: ['CHARACTER', 'PROP', 'ENVIRONMENT'],
       required: true,
     },
     metadata: {
@@ -38,4 +38,4 @@ const AssetSchema = new Schema(
 
 AssetSchema.index({ studioId: 1, createdAt: -1 });
 
-export const AssetModel = model("Asset", AssetSchema);
+export const AssetModel = model('Asset', AssetSchema);

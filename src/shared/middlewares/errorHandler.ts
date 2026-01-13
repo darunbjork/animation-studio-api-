@@ -1,11 +1,12 @@
-import type { Request, Response, NextFunction } from "express";
-import { DomainError } from "../errors/DomainError";
-import { logger } from "../../infra/logging/logger";
+import type { Request, Response, NextFunction } from 'express';
+import { DomainError } from '../errors/DomainError';
+import { logger } from '../../infra/logging/logger';
 
 export function errorHandler(
   err: Error,
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) {
   if (err instanceof DomainError) {
@@ -25,15 +26,15 @@ export function errorHandler(
   }
 
   logger.error({
-    message: "Unhandled error",
+    message: 'Unhandled error',
     error: err,
     // @ts-ignore
     correlationId: req.correlationId,
   });
 
   return res.status(500).json({
-    error: "INTERNAL_SERVER_ERROR",
-    message: "Something went wrong",
+    error: 'INTERNAL_SERVER_ERROR',
+    message: 'Something went wrong',
     // @ts-ignore
     correlationId: req.correlationId,
   });

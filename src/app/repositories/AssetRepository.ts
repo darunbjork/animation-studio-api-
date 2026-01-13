@@ -1,4 +1,4 @@
-import { AssetModel } from "./models/Asset";
+import { AssetModel } from './models/Asset';
 
 export class AssetRepository {
   static create(data: any) {
@@ -18,11 +18,9 @@ export class AssetRepository {
   }
 
   static update(assetId: string, studioId: string, data: any) {
-    return AssetModel.findOneAndUpdate(
-      { _id: assetId, studioId },
-      data,
-      { new: true }
-    );
+    return AssetModel.findOneAndUpdate({ _id: assetId, studioId }, data, {
+      new: true,
+    });
   }
 
   static delete(assetId: string, studioId: string) {

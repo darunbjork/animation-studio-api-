@@ -1,5 +1,5 @@
-import request from "supertest";
-import { app } from "../../../app";
+import request from 'supertest';
+import { app } from '../../../app';
 
 // Mock mongoose specifically for this test file
 jest.mock('mongoose', () => {
@@ -20,13 +20,10 @@ jest.mock('../../../infra/queue/redis', () => ({
   },
 }));
 
-describe("Health check", () => {
-  it("returns healthy status", async () => {
-    const res = await request(app).get("/health");
+describe('Health check', () => {
+  it('returns healthy status', async () => {
+    const res = await request(app).get('/health');
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe("healthy");
+    expect(res.body.status).toBe('healthy');
   });
 });
-
-
-

@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const AssetPipelineSchema = new Schema(
   {
     assetId: {
       type: Schema.Types.ObjectId,
-      ref: "Asset",
+      ref: 'Asset',
       required: true,
     },
     version: {
@@ -14,14 +14,14 @@ const AssetPipelineSchema = new Schema(
     status: {
       type: String,
       enum: [
-        "UPLOADED",
-        "VALIDATING",
-        "PROCESSING_PREVIEW",
-        "READY_FOR_RENDER",
-        "RENDER_QUEUED",
-        "FAILED",
+        'UPLOADED',
+        'VALIDATING',
+        'PROCESSING_PREVIEW',
+        'READY_FOR_RENDER',
+        'RENDER_QUEUED',
+        'FAILED',
       ],
-      default: "UPLOADED",
+      default: 'UPLOADED',
     },
     error: String,
   },
@@ -30,7 +30,4 @@ const AssetPipelineSchema = new Schema(
 
 AssetPipelineSchema.index({ assetId: 1, version: 1 }, { unique: true });
 
-export const AssetPipelineModel = model(
-  "AssetPipeline",
-  AssetPipelineSchema
-);
+export const AssetPipelineModel = model('AssetPipeline', AssetPipelineSchema);

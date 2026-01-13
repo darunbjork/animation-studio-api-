@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { RenderService } from "../services/RenderService";
+import { Request, Response } from 'express';
+import { RenderService } from '../services/RenderService';
 
 export class RenderController {
   static async start(req: Request, res: Response) {
