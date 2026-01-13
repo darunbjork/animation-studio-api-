@@ -3,4 +3,6 @@ module.exports = {
   testEnvironment: "node",
   testMatch: ["**/*.spec.ts", "**/*.test.ts"],
   clearMocks: true,
+  setupFiles: ["./jest.env.js"],
+  setupFilesAfterEnv: ["./jest.setup.js"],
 };

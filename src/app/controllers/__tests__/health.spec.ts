@@ -1,24 +1,24 @@
 import request from "supertest";
 import { app } from "../../../app";
-import mongoose from "mongoose";
-import { redis } from "../../../infra/queue/redis";
+
+// Mock mongoose specifically for this test file
+jest.mock('mongoose', () => {
+  // Get the actual mongoose module
+  const actualMongoose = jest.requireActual('mongoose');
+  return {
+    ...actualMongoose, // Keep all original exports
+    connection: {
+      ...actualMongoose.connection, // Keep original connection properties
+      readyState: 1, // Override only readyState
+    },
+  };
+});
 
 jest.mock('../../../infra/queue/redis', () => ({
   redis: {
     status: 'ready',
   },
 }));
-
-jest.mock('mongoose', () => {
-  const originalMongoose = jest.requireActual('mongoose');
-  return {
-    ...originalMongoose,
-    connection: {
-      readyState: 1,
-    },
-  };
-});
-
 
 describe("Health check", () => {
   it("returns healthy status", async () => {
@@ -27,3 +27,6 @@ describe("Health check", () => {
     expect(res.body.status).toBe("healthy");
   });
 });
+
+
+
