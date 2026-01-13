@@ -8,9 +8,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:latest # Use a specific version in production
+        ports:
+          - 27018:27017 # Map host port 27018 to container port 27017
+      redis:
+        image: redis:latest # Use a specific version in production
+        ports:
+          - 6379:6379 # Map host port 6379 to container port 6379
     env:
-      MONGO_URI: ${{ secrets.MONGO_URI }}
-      REDIS_URL: ${{ secrets.REDIS_URL }}
+      MONGO_URI: mongodb://localhost:27018/animation_studio_test # Use localhost with mapped port
+      REDIS_URL: redis://localhost:6379 # Use localhost with mapped port
     steps:
       - uses: actions/checkout@v4
 
