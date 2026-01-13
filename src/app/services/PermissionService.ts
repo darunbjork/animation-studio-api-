@@ -1,15 +1,15 @@
-type Role = "ARTIST" | "DIRECTOR" | "PRODUCER";
+type Role = 'ARTIST' | 'DIRECTOR' | 'PRODUCER';
 
 export class PermissionService {
   static canApprove(role: Role) {
-    return role === "DIRECTOR" || role === "PRODUCER";
+    return role === 'DIRECTOR' || role === 'PRODUCER';
   }
 
   static canDelete(role: Role) {
-    return role === "PRODUCER";
+    return role === 'PRODUCER';
   }
 
-  static canUpload(role: Role) {
+  static canUpload(_role: Role) {
     return true; // All roles can upload by default
   }
 
