@@ -2,6 +2,9 @@
 import mongoose from 'mongoose';
 import { connectDatabase } from './src/infra/database/mongoose';
 import { redis } from './src/infra/queue/redis';
+import { AssetModel } from './src/app/repositories/models/Asset';
+import { StudioModel } from './src/app/repositories/models/Studio';
+import { UserModel } from './src/app/repositories/models/User';
 
 // Establish connections before any tests run
 beforeAll(async () => {
@@ -12,9 +15,11 @@ beforeAll(async () => {
 
 // Drop the database before each test to ensure a clean state
 beforeEach(async () => {
-  if (mongoose.connection.db) {
-    await mongoose.connection.db.dropDatabase();
-  }
+  // Instead of dropping the whole database, delete all documents from relevant collections
+  // This ensures a clean slate while keeping the database structure
+  await AssetModel.deleteMany({});
+  await StudioModel.deleteMany({});
+  await UserModel.deleteMany({});
 });
 
 // Close connections after all tests have run
