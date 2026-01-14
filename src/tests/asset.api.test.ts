@@ -92,35 +92,36 @@ describe('Asset API', () => {
   });
 
   it('should paginate assets', async () => {
-    // Ensure a clean slate for this specific test
-    await AssetModel.deleteMany({});
-
     // Create enough assets to thoroughly test pagination
     const numberOfAssetsToCreate = 25;
+    const createAssetPromises = [];
+
     for (let i = 0; i < numberOfAssetsToCreate; i++) {
-      const createRes = await request(app)
-        .post('/assets')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          name: `Paginated Asset ${i}`,
-          type: 'PROP',
-          metadata: {
-            polyCount: 100 + i,
-            format: `fbx-${i}`,
-            previewUrl: `http://example.com/page_preview_${i}.jpg`,
-          }, // Add some metadata
-        });
-      console.log(
-        `Asset creation status for pagination test: ${createRes.status}`
+      createAssetPromises.push(
+        request(app)
+          .post('/assets')
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            name: `Paginated Asset ${i}`,
+            type: 'PROP',
+            metadata: {
+              polyCount: 100 + i,
+              format: `fbx-${i}`,
+              previewUrl: `http://example.com/page_preview_${i}.jpg`,
+            }, // Add some metadata
+          })
       );
+    }
+
+    const createdAssets = await Promise.all(createAssetPromises);
+
+    for (const createRes of createdAssets) {
       expect(createRes.status).toBe(201);
       expect(createRes.body._id).toBeDefined();
       expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
-      await new Promise((resolve) => setTimeout(resolve, 50)); // Small delay
     }
-    await new Promise((resolve) => setTimeout(resolve, 200)); // Delay after loop
 
-    // Verify total assets created (optional, but good for debugging)
+    // Verify total assets created
     const totalAssets = await AssetModel.countDocuments({});
     expect(totalAssets).toBe(numberOfAssetsToCreate);
 
