@@ -13,9 +13,5 @@
     "allowSyntheticDefaultImports": true,
     "types": ["jest", "node"]
   },
-  "include": [
-    "src/**/*",
-    "tests/**/*",
-    "jest.setup.ts"
-  ]
+  "include": ["src/**/*", "tests/**/*", "jest.setup.ts"]
 }
