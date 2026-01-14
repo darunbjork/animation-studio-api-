@@ -1,11 +1,10 @@
 import request from 'supertest';
-import { app } from '../src/app';
-import mongoose from 'mongoose';
-import { StudioModel } from '../src/app/repositories/models/Studio';
-import { UserModel } from '../src/app/repositories/models/User';
+import { app } from '../app';
+import { StudioModel } from '../app/repositories/models/Studio';
+import { UserModel } from '../app/repositories/models/User';
 import jwt from 'jsonwebtoken';
-import { env } from '../src/config/env';
-import { AssetModel } from '../src/app/repositories/models/Asset';
+import { env } from '../config/env';
+import { AssetModel } from '../app/repositories/models/Asset';
 
 describe('Asset API', () => {
   let token: string;
@@ -39,12 +38,6 @@ describe('Asset API', () => {
       env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-  });
-
-  afterAll(async () => {
-    if (mongoose.connection.db) {
-      await mongoose.connection.db.dropDatabase();
-    }
   });
 
   it('should create an asset', async () => {

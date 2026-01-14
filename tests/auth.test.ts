@@ -1,14 +1,7 @@
 import request from 'supertest';
 import { app } from '../src/app';
-import mongoose from 'mongoose';
 
 describe('Auth Flow', () => {
-  afterAll(async () => {
-    if (mongoose.connection.db) {
-      await mongoose.connection.db.dropDatabase();
-    }
-  });
-
   it('should register and login user', async () => {
     const register = await request(app).post('/auth/register').send({
       studioId: '507f1f77bcf86cd799439011',

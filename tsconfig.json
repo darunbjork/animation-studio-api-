@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
@@ -9,13 +10,12 @@
     "skipLibCheck": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "node"]
   },
   "include": [
     "src/**/*",
     "tests/**/*",
-    "jest.setup.ts",
-    ".eslintrc.js",
-    "jest.config.js"
+    "jest.setup.ts"
   ]
 }

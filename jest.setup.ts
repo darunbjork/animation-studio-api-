@@ -10,6 +10,13 @@ beforeAll(async () => {
   await connectDatabase();
 });
 
+// Drop the database before each test to ensure a clean state
+beforeEach(async () => {
+  if (mongoose.connection.db) {
+    await mongoose.connection.db.dropDatabase();
+  }
+});
+
 // Close connections after all tests have run
 afterAll(async () => {
   await mongoose.disconnect();
