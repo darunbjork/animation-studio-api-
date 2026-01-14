@@ -3,19 +3,10 @@ import { app } from '../src/app';
 import mongoose from 'mongoose';
 
 describe('Auth Flow', () => {
-  beforeAll(async () => {
-    if (!process.env.MONGO_URI) throw new Error('MONGO_URI not set');
-    if (!process.env.REDIS_URL) throw new Error('REDIS_URL not set');
-    console.log('Auth Flow Test: MONGO_URI:', process.env.MONGO_URI);
-    console.log('Auth Flow Test: REDIS_URL:', process.env.REDIS_URL);
-    await mongoose.connect(process.env.MONGO_URI || '');
-  });
-
   afterAll(async () => {
     if (mongoose.connection.db) {
       await mongoose.connection.db.dropDatabase();
     }
-    await mongoose.connection.close();
   });
 
   it('should register and login user', async () => {

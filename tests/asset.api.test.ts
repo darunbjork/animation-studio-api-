@@ -13,12 +13,6 @@ describe('Asset API', () => {
   let userId: string;
 
   beforeAll(async () => {
-    if (!process.env.MONGO_URI) throw new Error('MONGO_URI not set');
-    if (!process.env.REDIS_URL) throw new Error('REDIS_URL not set');
-    console.log('Asset API Test: MONGO_URI:', process.env.MONGO_URI);
-    console.log('Asset API Test: REDIS_URL:', process.env.REDIS_URL);
-    await mongoose.connect(process.env.MONGO_URI || '');
-
     const studio = await StudioModel.create({ name: 'Test Studio' });
     studioId = studio._id.toString();
 
@@ -51,7 +45,6 @@ describe('Asset API', () => {
     if (mongoose.connection.db) {
       await mongoose.connection.db.dropDatabase();
     }
-    await mongoose.connection.close();
   });
 
   it('should create an asset', async () => {

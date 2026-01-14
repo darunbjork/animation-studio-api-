@@ -4,6 +4,6 @@ module.exports = {
   testMatch: ['**/*.spec.ts', '**/*.test.ts'],
   clearMocks: true,
   setupFiles: ['./jest.env.js'],
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   testTimeout: 30000,
 };
