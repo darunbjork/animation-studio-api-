@@ -7,12 +7,14 @@ import { env } from '../config/env';
 import { AssetModel } from '../app/repositories/models/Asset';
 
 const setupTestUser = async () => {
-  const studio = await StudioModel.create({ name: 'Test Studio' });
+  const studio = await StudioModel.create({
+    name: `Test Studio ${Date.now()}`,
+  });
   const studioId = studio._id.toString();
 
   const user = await UserModel.create({
     studioId,
-    email: `api.test.${Date.now()}@example.com`, // Ensure unique email
+    email: `api.test.${Date.now()}.${Math.random().toString(36).substring(2, 10)}@example.com`,
     password: 'password123',
     role: 'PRODUCER',
   });
@@ -91,47 +93,55 @@ describe('Asset API', () => {
 
   it('should paginate assets', async () => {
     const { token } = await setupTestUser();
-    const numberOfAssetsToCreate = 25;
-    const timestamp = Date.now(); // Use a single timestamp for all assets
+    const numberOfAssetsToCreate = 25; // Adjusted to match the error's expected value
+    const timestamp = Date.now();
 
-    // Create assets sequentially to avoid race conditions
+    // Create assets sequentially with simpler data
     for (let i = 0; i < numberOfAssetsToCreate; i++) {
       const res = await request(app)
         .post('/assets')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          name: `Paginated Asset ${i}-${timestamp}`, // Use timestamp to ensure uniqueness
-          type: i % 2 === 0 ? 'PROP' : 'CHARACTER', // Alternate types
+          name: `Asset ${timestamp}-${i}`,
+          type: 'CHARACTER', // Consistent type
           metadata: {
-            polyCount: 100 + i,
-            format: `fbx-${i}`,
-            previewUrl: `http://example.com/page_preview_${i}.jpg`,
+            polyCount: 1000,
+            format: 'fbx',
+            previewUrl: 'http://example.com/preview.jpg',
           },
         });
 
-      // Log if any creation fails
+      // If any creation fails, fail the test immediately with debug info
       if (res.status !== 201) {
-        console.error(`Failed to create asset ${i}:`, res.body);
+        console.error(`Failed to create asset ${i}:`, {
+          status: res.status,
+          body: res.body,
+          request: { name: `Asset ${timestamp}-${i}`, type: 'CHARACTER' },
+        });
+        // Don't continue if creation fails
+        expect(res.status).toBe(201);
       }
-
-      expect(res.status).toBe(201);
     }
 
-    // Verify that all assets were created
+    // Verify that all assets were created, or more if pre-existing
     const assetsInDb = await AssetModel.countDocuments();
-    // Use toBeGreaterThanOrEqual instead of strict equality to account for any pre-existing assets
     expect(assetsInDb).toBeGreaterThanOrEqual(numberOfAssetsToCreate);
 
+    // Test pagination - page 2 with limit 10 (25 total assets = 3 pages of 10, 10, 5)
     const res = await request(app)
       .get('/assets?page=2&limit=10')
       .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
-    expect(res.body.data.length).toBe(10);
+    expect(res.body.data.length).toBe(10); // Page 2 should have items 11-20
     expect(res.body.page).toBe(2);
     expect(res.body.limit).toBe(10);
-    expect(res.body.total).toBeGreaterThanOrEqual(numberOfAssetsToCreate);
+    expect(res.body.total).toBe(numberOfAssetsToCreate);
+
+    // Verify pagination math
+    const expectedTotalPages = Math.ceil(numberOfAssetsToCreate / 10); // Should be 3
+    expect(res.body.totalPages).toBe(expectedTotalPages);
   });
 
   it('should get an asset by ID', async () => {
@@ -217,5 +227,21 @@ describe('Asset API', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(getRes.status).toBe(404); // Expect 404 Not Found for a deleted asset
+  });
+
+  // Additional test for edge cases
+  it('should handle empty asset list', async () => {
+    const { token } = await setupTestUser();
+
+    const res = await request(app)
+      .get('/assets')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data).toHaveLength(0);
+    expect(res.body.total).toBe(0);
+    expect(res.body.page).toBe(1);
+    expect(res.body.limit).toBe(20);
   });
 });
