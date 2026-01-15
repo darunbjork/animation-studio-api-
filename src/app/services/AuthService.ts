@@ -16,7 +16,8 @@ export class AuthService {
       throw new AppError('User already exists', 409);
     }
 
-    const user = await UserModel.create(data);
+    const user = new UserModel(data);
+    await user.save();
     return user;
   }
 
