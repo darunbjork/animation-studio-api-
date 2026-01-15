@@ -7,7 +7,10 @@ export class AssetController {
   static async create(req: Request, res: Response) {
     const correlationId = req.correlationId;
     // Log the request body to debug potential issues with data parsing or missing fields
-    logger.debug('Asset creation request body:', { correlationId, body: req.body });
+    logger.debug('Asset creation request body:', {
+      correlationId,
+      body: req.body,
+    });
     const asset = await AssetService.createAsset(
       {
         ...req.body,
