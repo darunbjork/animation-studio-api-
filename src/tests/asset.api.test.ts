@@ -40,6 +40,12 @@ const setupTestUser = async () => {
 };
 
 describe('Asset API', () => {
+  afterEach(async () => {
+    await AssetModel.deleteMany({});
+    await StudioModel.deleteMany({});
+    await UserModel.deleteMany({});
+  });
+
   it('should create an asset', async () => {
     const { token, studioId, userId } = await setupTestUser();
     const res = await request(app)
