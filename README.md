@@ -107,7 +107,11 @@ This script simulates render enqueues by sending HTTP POST requests to the `/ren
 
 ### Creating `load/asset-read.js`
 
-This script simulates reading assets by sending HTTP GET requests to the `/assets` endpoint of the API. It includes a check to ensure the response status is 200, and a short sleep to simulate user behavior. This helps in understanding the system's performance under asset retrieval load.
+This script simulates reading assets by sending HTTP GET requests to the `/assets` endpoint of the API. It now includes authentication to handle protected routes. It first logs in a test user to obtain an authentication token, which is then used in the `Authorization` header for the asset retrieval request. It also includes a check to ensure the response status is 200, and a short sleep to simulate user behavior. This helps in understanding the system's performance under authenticated asset retrieval load.
+
+### Creating `load/auth-utils.js`
+
+This utility module provides a `getAuthToken` function that handles user login to the API and extracts the authentication token from the response. This allows k6 test scripts to authenticate with the API before making requests to protected endpoints. For this to work, a test user (e.g., `test@example.com` with password `password`) must be registered in the system.
 
 ### Verifying TypeScript Errors
 
