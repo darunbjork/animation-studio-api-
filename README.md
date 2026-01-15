@@ -95,6 +95,36 @@ _Note: The `api` service inside Docker will resolve `redis` and `mongo` to the r
 
 ---
 
+## Load Testing with k6
+
+### Installing k6
+
+For installing `k6`, `brew install k6` is the preferred method on macOS. `brew` (Homebrew) is a package manager designed specifically for installing standalone command-line tools on macOS, like `k6`. It generally provides a more stable and system-integrated installation.
+
+### Creating `load/render-enqueue.js`
+
+This script simulates render enqueues by sending HTTP POST requests to the `/renders` endpoint of the API. This is a crucial part of the load testing setup to stress-test the render queue and observe its behavior under load.
+
+### Creating `load/asset-read.js`
+
+This script simulates reading assets by sending HTTP GET requests to the `/assets` endpoint of the API. It includes a check to ensure the response status is 200, and a short sleep to simulate user behavior. This helps in understanding the system's performance under asset retrieval load.
+
+### Verifying TypeScript Errors
+
+Running the TypeScript compiler (`tsc`) ensures there are no compilation errors in the project. A successful command indicates a clean TypeScript build.
+
+### Formatting and Linting
+
+Ensuring code quality and consistency using Prettier for formatting and ESLint for linting.
+`prettier --write .` applies formatting changes.
+`npm run lint` checks for ESLint issues.
+
+### Troubleshooting API Server Startup
+
+The API server failed to start with "getaddrinfo ENOTFOUND redis" and "getaddrinfo ENOTFOUND mongo" errors. This indicates that the server cannot connect to the Redis and MongoDB services, which are likely expected to be running as Docker containers. To resolve this, these services need to be started using Docker Compose using `docker-compose up -d`.
+
+---
+
 🎬 **MongoDB + Authentication (Senior Backend Mode)**
 
 > _“Database design vs React state for animation data”_
@@ -419,8 +449,6 @@ This is **senior-level distributed thinking**.
 ---
 
 ### Implementation Details for Real-Time Collaboration
-
-This system provides collaborative features using WebSocket technology, specifically Socket.IO, integrated with Express.
 
 #### Key Aspects
 
