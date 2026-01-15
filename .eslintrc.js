@@ -8,6 +8,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
+  ignorePatterns: ['dist/', 'node_modules/'],
   rules: {
     // Temporarily disable these rules to get linting passing initially
     '@typescript-eslint/no-explicit-any': 'off',
