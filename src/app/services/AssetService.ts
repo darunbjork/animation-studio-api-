@@ -1,5 +1,6 @@
 import { AssetRepository } from '../repositories/AssetRepository';
 import { ValidationError } from '../../shared/errors/ValidationError';
+import { NotFoundError } from '../../shared/errors/NotFoundError';
 import { AuthorizationError } from '../../shared/errors/AuthorizationError';
 import { PermissionService } from './PermissionService';
 import { AssetListService } from './AssetListService';
@@ -47,7 +48,7 @@ export class AssetService {
         assetId,
         studioId,
       });
-      throw new ValidationError('Asset not found');
+      throw new NotFoundError('Asset not found');
     }
     logger.info('Asset retrieved in service', {
       correlationId,
@@ -72,7 +73,7 @@ export class AssetService {
         studioId,
         data,
       });
-      throw new ValidationError('Asset not found');
+      throw new NotFoundError('Asset not found');
     }
     logger.info('Asset updated in service', {
       correlationId,
@@ -115,7 +116,7 @@ export class AssetService {
         assetId,
         studioId,
       });
-      throw new ValidationError('Asset not found');
+      throw new NotFoundError('Asset not found');
     }
     logger.info('Asset deleted in service', {
       correlationId,
@@ -143,7 +144,7 @@ export class AssetService {
         studioId,
         version,
       });
-      throw new ValidationError('Asset not found');
+      throw new NotFoundError('Asset not found');
     }
 
     asset.currentVersion = version;

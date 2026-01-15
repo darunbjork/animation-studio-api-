@@ -10,14 +10,18 @@ export class AssetListService {
       return JSON.parse(cached);
     }
 
-    const assets = await AssetRepository.findByStudio(studioId, {
-      skip: (page - 1) * limit,
-      limit,
-    });
+    const [assets, total] = await Promise.all([
+      AssetRepository.findByStudio(studioId, {
+        skip: (page - 1) * limit,
+        limit,
+      }),
+      AssetRepository.countByStudio(studioId),
+    ]);
 
     const result = {
       page,
       limit,
+      total,
       data: assets,
     };
 

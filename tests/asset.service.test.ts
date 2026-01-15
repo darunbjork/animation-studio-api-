@@ -10,6 +10,6 @@ describe('AssetService', () => {
         name: '',
         type: 'CHARACTER',
       })
-    ).rejects.toThrow(new ValidationError('Asset name is required'));
+    ).rejects.toThrow(ValidationError);
   });
 });

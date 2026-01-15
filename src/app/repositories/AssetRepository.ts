@@ -13,6 +13,10 @@ export class AssetRepository {
       .sort({ createdAt: -1 });
   }
 
+  static countByStudio(studioId: string) {
+    return AssetModel.countDocuments({ studioId });
+  }
+
   static findOneByIdAndStudio(assetId: string, studioId: string) {
     return AssetModel.findOne({ _id: assetId, studioId });
   }

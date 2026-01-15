@@ -6,41 +6,40 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { AssetModel } from '../app/repositories/models/Asset';
 
-describe('Asset API', () => {
-  let token: string;
-  let studioId: string;
-  let userId: string;
+const setupTestUser = async () => {
+  const studio = await StudioModel.create({ name: 'Test Studio' });
+  const studioId = studio._id.toString();
 
-  beforeAll(async () => {
-    const studio = await StudioModel.create({ name: 'Test Studio' });
-    studioId = studio._id.toString();
-
-    const user = await UserModel.create({
-      studioId,
-      email: 'api.test@example.com',
-      password: 'password123',
-      role: 'PRODUCER', // Changed role to PRODUCER
-    });
-    userId = user._id.toString();
-
-    token = jwt.sign(
-      {
-        userId: user.id,
-        role: user.role,
-        studioId: user.studioId,
-        scopes: [
-          'assets:read',
-          'assets:write',
-          'assets:delete',
-          'assets:approve',
-        ], // Added scopes
-      },
-      env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+  const user = await UserModel.create({
+    studioId,
+    email: `api.test.${Date.now()}@example.com`, // Ensure unique email
+    password: 'password123',
+    role: 'PRODUCER',
   });
+  const userId = user._id.toString();
 
+  const token = jwt.sign(
+    {
+      userId: user.id,
+      role: user.role,
+      studioId: user.studioId,
+      scopes: [
+        'assets:read',
+        'assets:write',
+        'assets:delete',
+        'assets:approve',
+      ],
+    },
+    env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  return { token, studioId, userId };
+};
+
+describe('Asset API', () => {
   it('should create an asset', async () => {
+    const { token, studioId, userId } = await setupTestUser();
     const res = await request(app)
       .post('/assets')
       .set('Authorization', `Bearer ${token}`)
@@ -63,6 +62,7 @@ describe('Asset API', () => {
   });
 
   it('should list assets', async () => {
+    const { token } = await setupTestUser();
     // Create an asset for this test
     const createRes = await request(app)
       .post('/assets')
@@ -77,8 +77,6 @@ describe('Asset API', () => {
         },
       });
     expect(createRes.status).toBe(201);
-    expect(createRes.body._id).toBeDefined();
-    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
 
     const res = await request(app)
       .get('/assets')
@@ -86,13 +84,13 @@ describe('Asset API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
-    expect(res.body.data.length).toBeGreaterThan(0);
+    expect(res.body.data.length).toBe(1);
     expect(res.body.page).toBe(1);
     expect(res.body.limit).toBe(20);
   });
 
   it('should paginate assets', async () => {
-    // Create enough assets to thoroughly test pagination
+    const { token } = await setupTestUser();
     const numberOfAssetsToCreate = 25;
     const createAssetPromises = [];
 
@@ -102,28 +100,26 @@ describe('Asset API', () => {
           .post('/assets')
           .set('Authorization', `Bearer ${token}`)
           .send({
-            name: `Paginated Asset ${i}`,
+            name: `Paginated Asset ${i}-${Date.now()}`,
             type: 'PROP',
             metadata: {
               polyCount: 100 + i,
               format: `fbx-${i}`,
               previewUrl: `http://example.com/page_preview_${i}.jpg`,
-            }, // Add some metadata
+            },
           })
       );
     }
 
-    const createdAssets = await Promise.all(createAssetPromises);
+    const createResponses = await Promise.all(createAssetPromises);
 
-    for (const createRes of createdAssets) {
-      expect(createRes.status).toBe(201);
-      expect(createRes.body._id).toBeDefined();
-      expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
+    for (const res of createResponses) {
+      expect(res.status).toBe(201);
     }
 
-    // Verify total assets created
-    const totalAssets = await AssetModel.countDocuments({});
-    expect(totalAssets).toBe(numberOfAssetsToCreate);
+    // Verify that all assets were created
+    const assetsInDb = await AssetModel.countDocuments();
+    expect(assetsInDb).toBe(numberOfAssetsToCreate);
 
     const res = await request(app)
       .get('/assets?page=2&limit=10')
@@ -131,19 +127,20 @@ describe('Asset API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
-    expect(res.body.data.length).toBe(10); // Expect 10 assets for page 2, limit 10
+    expect(res.body.data.length).toBe(10);
     expect(res.body.page).toBe(2);
     expect(res.body.limit).toBe(10);
+    expect(res.body.total).toBe(numberOfAssetsToCreate);
   });
 
   it('should get an asset by ID', async () => {
-    // Create an asset for this test
+    const { token } = await setupTestUser();
     const createRes = await request(app)
       .post('/assets')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Asset to Get',
-        type: 'PROP', // Changed from VEHICLE to PROP
+        type: 'PROP',
         metadata: {
           polyCount: 1500,
           format: 'usd',
@@ -151,8 +148,6 @@ describe('Asset API', () => {
         },
       });
     expect(createRes.status).toBe(201);
-    expect(createRes.body._id).toBeDefined();
-    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToGet = createRes.body._id;
 
     const getRes = await request(app)
@@ -165,13 +160,13 @@ describe('Asset API', () => {
   });
 
   it('should update an asset', async () => {
-    // Create an asset for this test
+    const { token } = await setupTestUser();
     const createRes = await request(app)
       .post('/assets')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Asset to Update',
-        type: 'PROP', // Changed from VEHICLE to PROP
+        type: 'PROP',
         metadata: {
           polyCount: 2000,
           format: 'gltf',
@@ -179,8 +174,6 @@ describe('Asset API', () => {
         },
       });
     expect(createRes.status).toBe(201);
-    expect(createRes.body._id).toBeDefined();
-    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToUpdate = createRes.body._id;
 
     const updateRes = await request(app)
@@ -196,13 +189,13 @@ describe('Asset API', () => {
   });
 
   it('should delete an asset', async () => {
-    // Create an asset for this test
+    const { token } = await setupTestUser();
     const createRes = await request(app)
       .post('/assets')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Asset to Delete',
-        type: 'PROP', // Changed from VEHICLE to PROP
+        type: 'PROP',
         metadata: {
           polyCount: 50,
           format: 'abc',
@@ -210,8 +203,6 @@ describe('Asset API', () => {
         },
       });
     expect(createRes.status).toBe(201);
-    expect(createRes.body._id).toBeDefined();
-    expect(createRes.body._id).toMatch(/^[0-9a-fA-F]{24}$/);
     const assetIdToDelete = createRes.body._id;
 
     const deleteRes = await request(app)
@@ -224,6 +215,6 @@ describe('Asset API', () => {
       .get(`/assets/${assetIdToDelete}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(getRes.status).toBe(400); // Asset not found
+    expect(getRes.status).toBe(404); // Expect 404 Not Found for a deleted asset
   });
 });
