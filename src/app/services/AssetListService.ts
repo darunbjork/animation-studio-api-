@@ -18,10 +18,13 @@ export class AssetListService {
       AssetRepository.countByStudio(studioId),
     ]);
 
+    const totalPages = Math.ceil(total / limit);
+
     const result = {
       page,
       limit,
       total,
+      totalPages,
       data: assets,
     };
 
