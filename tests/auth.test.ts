@@ -29,4 +29,3 @@ describe('Auth Flow', () => {
     expect(login.body.token).toBeDefined();
   });
 });
-
