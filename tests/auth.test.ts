@@ -1,3 +1,5 @@
+import request from 'supertest';
+import { app } from '../src/app';
 import { UserModel } from '../src/app/repositories/models/User';
 import { StudioModel } from '../src/app/repositories/models/Studio';
 
